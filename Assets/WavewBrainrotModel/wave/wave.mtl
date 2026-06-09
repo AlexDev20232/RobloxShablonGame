@@ -1,0 +1,14 @@
+newmtl Tsunamiwave1Mtl
+Material Color
+Ka 0.00143313 0.14198 0.420508
+Kd 0.00143313 0.14198 0.420508
+Ks 0.000567634 0.0562353 0.166554 
+
+d 1
+
+Ns 255
+
+map_Bump Tsunamiwave1_nmap.png
+
+map_Ns Tsunamiwave1_spec.png
+

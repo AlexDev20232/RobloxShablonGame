@@ -1,0 +1,49 @@
+# Unity generated folders
+/Library/
+/Temp/
+/Obj/
+/Logs/
+/Build/
+/Builds/
+/UserSettings/
+/MemoryCaptures/
+/IconBackup/
+/Assets/_Recovery/
+/Assets/_Recovery.meta
+
+# Unity generated files
+*.csproj
+*.sln
+*.slnx
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity crash/log artifacts
+sysinfo.txt
+*.stackdump
+
+# IDE/editor
+/.vscode/
+/.idea/
+*.swp
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Secrets and local environment
+.env
+.env.*
+*.keystore
+*.p12
+*.pem
+*.key

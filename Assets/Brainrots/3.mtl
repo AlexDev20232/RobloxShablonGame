@@ -1,0 +1,74 @@
+newmtl Sphere1Mtl
+Material Color
+Ka 0.0759261 0.227137 0.0118813
+Kd 0.0759261 0.227137 0.0118813
+Ks 0.0300727 0.0899639 0.00470594 
+
+d 1
+
+Ns 0
+
+newmtl Cube0011Mtl
+Material Color
+Ka 1 0.632043 0.535642
+Kd 1 0.632043 0.535642
+Ks 0.396078 0.250338 0.212156 
+
+d 1
+
+Ns 0
+
+newmtl Cylinder0011Mtl
+Material Color
+Ka 0.373615 0.368591 0.383775
+Kd 0.373615 0.368591 0.383775
+Ks 0.0322335 0.0318 0.03311 
+
+d 1
+
+Ns 255
+
+map_Ka Cylinder0011_diff.png
+map_Kd Cylinder0011_diff.png
+map_d Cylinder0011_diff.png
+
+newmtl Cube0061Mtl
+Material Color
+Ka 0.612066 0.163641 0.0511221
+Kd 0.612066 0.163641 0.0511221
+Ks 0.242426 0.0648145 0.0202483 
+
+d 1
+
+Ns 0
+
+newmtl Sphere0011Mtl
+Material Color
+Ka 0.339223 0.0600316 0.0289912
+Kd 0.339223 0.0600316 0.0289912
+Ks 0.134359 0.0237772 0.0114828 
+
+d 1
+
+Ns 0
+
+newmtl Cube0071Mtl
+Material Color
+Ka 0.212044 0.425905 0.0638149
+Kd 0.212044 0.425905 0.0638149
+Ks 0.0839862 0.168692 0.0252757 
+
+d 1
+
+Ns 0
+
+newmtl Sphere0021Mtl
+Material Color
+Ka 0.592438 0.694081 0.116576
+Kd 0.592438 0.694081 0.116576
+Ks 0.234652 0.27491 0.0461732 
+
+d 1
+
+Ns 0
+
