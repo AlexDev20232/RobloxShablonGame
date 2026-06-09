@@ -8,8 +8,11 @@ public class UpgradeController : MonoBehaviour
 
     [Header("Speed")]
     [SerializeField] private SimpleRunIdleController playerController;
+    [SerializeField] private SimpleRobloxController robloxController;
+    [SerializeField] private bool autoFindPlayerController = true;
     [SerializeField] private float baseMoveSpeed = 5f;
     [SerializeField] private float speedPerLevel = 0.1f;
+    [SerializeField] private float sprintMultiplier = 1.65f;
 
     [Header("Starting Values")]
     [SerializeField] private int startingSpeedLevel = 0;
@@ -27,6 +30,7 @@ public class UpgradeController : MonoBehaviour
 
     private void Awake()
     {
+        ResolvePlayerControllers();
         BindUpgradeItems();
         Load();
         ApplySpeed();
@@ -142,6 +146,24 @@ public class UpgradeController : MonoBehaviour
         }
     }
 
+    private void ResolvePlayerControllers()
+    {
+        if (!autoFindPlayerController)
+        {
+            return;
+        }
+
+        if (robloxController == null)
+        {
+            robloxController = FindFirstObjectByType<SimpleRobloxController>();
+        }
+
+        if (playerController == null)
+        {
+            playerController = FindFirstObjectByType<SimpleRunIdleController>();
+        }
+    }
+
     private void Load()
     {
         _speedLevel = PlayerPrefs.GetInt(speedLevelKey, startingSpeedLevel);
@@ -169,13 +191,19 @@ public class UpgradeController : MonoBehaviour
 
     private void ApplySpeed()
     {
-        if (playerController == null)
+        float target = baseMoveSpeed + _speedLevel * speedPerLevel;
+        float walk = Mathf.Max(0.01f, target);
+
+        if (robloxController != null)
         {
-            return;
+            float sprint = walk * Mathf.Max(1f, sprintMultiplier);
+            robloxController.SetMoveSpeeds(walk, sprint);
         }
 
-        float target = baseMoveSpeed + _speedLevel * speedPerLevel;
-        playerController.moveSpeed = Mathf.Max(0.01f, target);
+        if (playerController != null)
+        {
+            playerController.moveSpeed = walk;
+        }
     }
 
     private long GetCostForDelta(int delta)

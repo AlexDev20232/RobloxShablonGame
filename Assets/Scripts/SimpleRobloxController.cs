@@ -56,6 +56,15 @@ public class SimpleRobloxController : MonoBehaviour
 
     public Vector3 WorldVelocity => new Vector3(_hVelocity.x, _vVelocity, _hVelocity.z);
     public bool IsGrounded => _cc != null && _cc.isGrounded;
+    public float WalkSpeed => walkSpeed;
+    public float SprintSpeed => sprintSpeed;
+
+    public void SetMoveSpeeds(float newWalkSpeed, float newSprintSpeed)
+    {
+        walkSpeed = Mathf.Max(0.01f, newWalkSpeed);
+        sprintSpeed = Mathf.Max(walkSpeed, newSprintSpeed);
+        normalizeSpeedBy = walkSpeed;
+    }
 
     private void Awake()
     {
