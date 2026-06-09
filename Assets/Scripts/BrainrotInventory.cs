@@ -70,6 +70,7 @@ public class BrainrotInventory : MonoBehaviour
         _carried = target;
         _carriedSlotIndex = -1;
         _carried.SetCarried(true);
+        BrainrotIndexData.Unlock(_carried);
 
         AttachToHold(_carried.transform);
         SetBrainrotTimer(_carried, false);

@@ -2294,7 +2294,7 @@ MonoBehaviour:
   placePoint: {fileID: 1218463168}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 1275057585}
   placeText: Place Brainrot
@@ -3335,7 +3335,7 @@ MonoBehaviour:
   placePoint: {fileID: 648227449}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 136605469}
   placeText: Place Brainrot
@@ -3738,7 +3738,7 @@ MonoBehaviour:
   placePoint: {fileID: 2013280795}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 1974908623}
   placeText: Place Brainrot
@@ -11064,7 +11064,7 @@ MonoBehaviour:
   placePoint: {fileID: 245687820}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 794622122}
   placeText: Place Brainrot
@@ -12738,7 +12738,7 @@ MonoBehaviour:
   placePoint: {fileID: 879923825}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 1047641988}
   placeText: Place Brainrot
@@ -13149,7 +13149,7 @@ MonoBehaviour:
   placePoint: {fileID: 1823724087}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 875031094}
   placeText: Place Brainrot
@@ -17336,7 +17336,7 @@ MonoBehaviour:
   placePoint: {fileID: 1408253359}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 1020063226}
   placeText: Place Brainrot
@@ -20474,7 +20474,7 @@ MonoBehaviour:
   placePoint: {fileID: 427742239}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 379902625}
   placeText: Place Brainrot
@@ -22767,7 +22767,7 @@ MonoBehaviour:
   placePoint: {fileID: 1691171149}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 1538187748}
   placeText: Place Brainrot
@@ -24055,7 +24055,7 @@ MonoBehaviour:
   placePoint: {fileID: 1466197694}
   faceTarget: {fileID: 32608269}
   faceTargetOnPlace: 1
-  facingYawOffset: 0
+  facingYawOffset: 180
   promptPrefab: {fileID: 3432156813364816448, guid: 7a4a0b1ae9a5c0641b66b62c28a3ddab, type: 3}
   promptAnchor: {fileID: 1732909724}
   placeText: Place Brainrot
@@ -26513,10 +26513,13 @@ MonoBehaviour:
   - {fileID: 1122396781}
   - {fileID: 1388568133}
   - {fileID: 251187940}
-  startingUnlockedSlots: 5
-  maxSlots: 10
+  startingUnlockedSlots: 10
+  maxSlots: 30
+  unlockFirstFloorByDefault: 1
+  firstFloorName: FirstFloor
   autoUnlockFromRebirth: 0
   persistUnlockedSlots: 1
+  keepSavedSlotsAtLeastDefault: 1
   unlockedSlotsKey: BaseUnlockedSlots
 --- !u!1 &1740278566
 GameObject:

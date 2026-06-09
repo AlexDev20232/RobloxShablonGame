@@ -12,7 +12,7 @@ public class BrainrotBaseSlot : MonoBehaviour
     [SerializeField] private Transform placePoint;
     [SerializeField] private Transform faceTarget;
     [SerializeField] private bool faceTargetOnPlace = true;
-    [SerializeField] private float facingYawOffset = 0f;
+    [SerializeField] private float facingYawOffset = 180f;
 
     [Header("Prompt")]
     [SerializeField] private PurchasePrompt promptPrefab;
@@ -30,6 +30,7 @@ public class BrainrotBaseSlot : MonoBehaviour
 
     [Header("Stored Income")]
     [SerializeField] private bool updateStoredUi = true;
+    [SerializeField] private float uiRefreshInterval = 0.25f;
 
     private PurchasePrompt _promptInstance;
     private BrainrotDefinition _occupant;
@@ -37,6 +38,7 @@ public class BrainrotBaseSlot : MonoBehaviour
     private bool _unlocked = true;
     private bool _playerInside;
     private float _holdTimer;
+    private float _nextUiRefreshTime;
     private double _stored;
 
     private UpgradeController _money;
@@ -80,7 +82,12 @@ public class BrainrotBaseSlot : MonoBehaviour
         if (_occupant != null)
         {
             _stored += GetIncomePerSecond() * Time.deltaTime;
-            UpdateStoredUI();
+            if (Time.time >= _nextUiRefreshTime)
+            {
+                _nextUiRefreshTime = Time.time + Mathf.Max(0.05f, uiRefreshInterval);
+                UpdateStoredUI();
+            }
+
             SetPromptActive(false);
             return;
         }
@@ -195,11 +202,13 @@ public class BrainrotBaseSlot : MonoBehaviour
 
         Transform target = placePoint != null ? placePoint : transform;
         Vector3 worldScale = def.transform.lossyScale;
-        def.transform.SetParent(target, true);
+        def.transform.SetParent(target, false);
         def.transform.localPosition = Vector3.zero;
         def.transform.localRotation = Quaternion.identity;
 
         RestoreWorldScale(def.transform, worldScale);
+        ApplyPlacedRotation(def.transform);
+        BrainrotIndexData.Unlock(def);
 
         BrainrotLifetime lifetime = def.GetComponent<BrainrotLifetime>();
         if (lifetime != null)
@@ -235,6 +244,7 @@ public class BrainrotBaseSlot : MonoBehaviour
         slotUI.SetLevel(_level);
         slotUI.SetUpgradeCost(UpgradeController.FormatCurrency(GetUpgradeCost()));
         slotUI.SetIncome(UpgradeController.FormatCurrency(GetIncomePerSecond()) + "/s");
+        slotUI.SetUpgradeInteractable(_money != null);
         UpdateStoredUI();
     }
 
@@ -283,6 +293,44 @@ public class BrainrotBaseSlot : MonoBehaviour
         float y = Mathf.Abs(p.y) < 0.0001f ? 1f : worldScale.y / p.y;
         float z = Mathf.Abs(p.z) < 0.0001f ? 1f : worldScale.z / p.z;
         target.localScale = new Vector3(x, y, z);
+    }
+
+    private void ApplyPlacedRotation(Transform placed)
+    {
+        if (placed == null)
+        {
+            return;
+        }
+
+        if (!faceTargetOnPlace)
+        {
+            placed.rotation = (placePoint != null ? placePoint.rotation : transform.rotation) *
+                              Quaternion.Euler(0f, facingYawOffset, 0f);
+            return;
+        }
+
+        Transform target = faceTarget;
+        if (target == null)
+        {
+            BrainrotBaseManager manager = GetComponentInParent<BrainrotBaseManager>();
+            if (manager != null)
+            {
+                target = manager.transform;
+            }
+        }
+
+        Vector3 direction = target != null
+            ? target.position - placed.position
+            : transform.forward;
+
+        direction.y = 0f;
+        if (direction.sqrMagnitude < 0.001f)
+        {
+            direction = transform.forward;
+        }
+
+        placed.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up) *
+                          Quaternion.Euler(0f, facingYawOffset, 0f);
     }
 
     private void OnTriggerEnter(Collider other)

@@ -20,9 +20,23 @@ public class BrainrotBaseSlotUI : MonoBehaviour
             slot = GetComponentInParent<BrainrotBaseSlot>();
         }
 
+        if (upgradeButton == null)
+        {
+            upgradeButton = GetComponentInChildren<Button>(true);
+        }
+
         if (upgradeButton != null)
         {
+            upgradeButton.onClick.RemoveListener(HandleUpgradeClick);
             upgradeButton.onClick.AddListener(HandleUpgradeClick);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (upgradeButton != null)
+        {
+            upgradeButton.onClick.RemoveListener(HandleUpgradeClick);
         }
     }
 
@@ -46,7 +60,7 @@ public class BrainrotBaseSlotUI : MonoBehaviour
     {
         if (levelText != null)
         {
-            levelText.text = $"level {level} > level{level+1}";
+            levelText.text = $"Level {level} > {level + 1}";
         }
     }
 
@@ -71,6 +85,14 @@ public class BrainrotBaseSlotUI : MonoBehaviour
         if (storedText != null)
         {
             storedText.text = value;
+        }
+    }
+
+    public void SetUpgradeInteractable(bool value)
+    {
+        if (upgradeButton != null)
+        {
+            upgradeButton.interactable = value;
         }
     }
 
@@ -105,6 +127,8 @@ public class BrainrotBaseSlotUI : MonoBehaviour
         {
             storedText.text = "$0";
         }
+
+        SetUpgradeInteractable(false);
     }
 
     private void HandleUpgradeClick()

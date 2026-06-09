@@ -5,12 +5,15 @@ public class BrainrotBaseManager : MonoBehaviour
 {
     [Header("Slots")]
     [SerializeField] private BrainrotBaseSlot[] slots;
-    [SerializeField] private int startingUnlockedSlots = 5;
-    [SerializeField] private int maxSlots = 10;
+    [SerializeField] private int startingUnlockedSlots = 10;
+    [SerializeField] private int maxSlots = 30;
+    [SerializeField] private bool unlockFirstFloorByDefault = true;
+    [SerializeField] private string firstFloorName = "FirstFloor";
     [SerializeField] private bool autoUnlockFromRebirth = false;
 
     [Header("Save Keys")]
     [SerializeField] private bool persistUnlockedSlots = true;
+    [SerializeField] private bool keepSavedSlotsAtLeastDefault = true;
     [SerializeField] private string unlockedSlotsKey = "BaseUnlockedSlots";
 
     private int _unlockedSlots;
@@ -34,7 +37,13 @@ public class BrainrotBaseManager : MonoBehaviour
         }
 
         SortSlots();
-        int savedSlots = persistUnlockedSlots ? PlayerPrefs.GetInt(unlockedSlotsKey, startingUnlockedSlots) : startingUnlockedSlots;
+        int defaultSlots = GetDefaultUnlockedSlotCount();
+        int savedSlots = persistUnlockedSlots ? PlayerPrefs.GetInt(unlockedSlotsKey, defaultSlots) : defaultSlots;
+        if (keepSavedSlotsAtLeastDefault)
+        {
+            savedSlots = Mathf.Max(savedSlots, defaultSlots);
+        }
+
         ApplyUnlockedSlots(savedSlots, false);
     }
 
@@ -45,7 +54,7 @@ public class BrainrotBaseManager : MonoBehaviour
             return;
         }
 
-        int target = Mathf.Clamp(startingUnlockedSlots + Mathf.Max(0, rebirthLevel), 0, MaxSlots);
+        int target = Mathf.Clamp(GetDefaultUnlockedSlotCount() + Mathf.Max(0, rebirthLevel), 0, MaxSlots);
         if (target > _unlockedSlots)
         {
             SetUnlockedSlots(target);
@@ -128,5 +137,46 @@ public class BrainrotBaseManager : MonoBehaviour
 
             return aPosition.x.CompareTo(bPosition.x);
         });
+    }
+
+    private int GetDefaultUnlockedSlotCount()
+    {
+        int fallback = Mathf.Clamp(startingUnlockedSlots, 0, MaxSlots);
+        if (!unlockFirstFloorByDefault || slots == null || slots.Length == 0)
+        {
+            return fallback;
+        }
+
+        int firstFloorSlots = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (IsOnFirstFloor(slots[i]))
+            {
+                firstFloorSlots++;
+            }
+        }
+
+        return firstFloorSlots > 0 ? Mathf.Clamp(firstFloorSlots, 0, MaxSlots) : fallback;
+    }
+
+    private bool IsOnFirstFloor(BrainrotBaseSlot slot)
+    {
+        if (slot == null || string.IsNullOrWhiteSpace(firstFloorName))
+        {
+            return false;
+        }
+
+        Transform current = slot.transform;
+        while (current != null && current != transform)
+        {
+            if (current.name == firstFloorName)
+            {
+                return true;
+            }
+
+            current = current.parent;
+        }
+
+        return false;
     }
 }
