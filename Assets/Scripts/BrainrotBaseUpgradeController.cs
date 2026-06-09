@@ -11,29 +11,24 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private TMP_Text priceText;
 
-    [Header("Upgrade Costs for Slots 11-30")]
+    [Header("Slot Upgrade Pricing")]
+    [SerializeField] private int firstPaidSlotNumber = 6;
     [SerializeField] private double[] slotUpgradeCosts =
     {
-        1_000_000d,   // 11
-        10_000_000d,  // 12
-        25_000_000d,  // 13
-        50_000_000d,  // 14
-        100_000_000d, // 15
-        250_000_000d, // 16
-        500_000_000d, // 17
-        750_000_000d, // 18
-        1_000_000_000d, // 19
-        2_500_000_000d, // 20
-        5_000_000_000d, // 21
-        7_500_000_000d, // 22
-        10_000_000_000d, // 23
-        12_500_000_000d, // 24
-        25_000_000_000d, // 25
-        50_000_000_000d, // 26
-        100_000_000_000d, // 27
-        250_000_000_000d, // 28
-        500_000_000_000d, // 29
-        750_000_000_000d  // 30
+        500d,          // 6
+        2_500d,        // 7
+        10_000d,       // 8
+        50_000d,       // 9
+        250_000d,      // 10
+        1_000_000d,    // 11
+        10_000_000d,   // 12
+        25_000_000d,   // 13
+        50_000_000d,   // 14
+        100_000_000d,  // 15
+        250_000_000d,  // 16
+        500_000_000d,  // 17
+        750_000_000d,  // 18
+        1_000_000_000d // 19
     };
 
     private void Awake()
@@ -49,6 +44,21 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
         }
 
         RefreshUI();
+    }
+
+    public bool CanUpgrade()
+    {
+        return baseManager != null && money != null && baseManager.UnlockedSlots < baseManager.MaxSlots && GetNextSlotCost() > 0d;
+    }
+
+    public double GetNextSlotCost()
+    {
+        if (baseManager == null)
+        {
+            return 0d;
+        }
+
+        return GetCostForSlot(baseManager.UnlockedSlots + 1);
     }
 
     public void TryUpgradeBase()
@@ -81,12 +91,12 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
 
     private double GetCostForSlot(int slotNumber)
     {
-        if (slotNumber <= 10)
+        if (slotNumber < firstPaidSlotNumber)
         {
             return 0d;
         }
 
-        int index = slotNumber - 11;
+        int index = slotNumber - firstPaidSlotNumber;
         if (slotUpgradeCosts == null || index < 0 || index >= slotUpgradeCosts.Length)
         {
             return 0d;
@@ -107,8 +117,8 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
 
         if (levelText != null)
         {
-            int upgradeLevel = Mathf.Max(0, currentSlots - 10);
-            int maxUpgrade = Mathf.Max(0, maxSlots - 10);
+            int upgradeLevel = Mathf.Max(0, currentSlots - firstPaidSlotNumber + 1);
+            int maxUpgrade = Mathf.Max(0, maxSlots - firstPaidSlotNumber + 1);
             levelText.text = $"{upgradeLevel}/{maxUpgrade}";
         }
 

@@ -4,9 +4,21 @@ using UnityEngine.UI;
 
 public class RebirthSystem : MonoBehaviour
 {
+    private enum RebirthRequirementType
+    {
+        SpeedLevel,
+        Coins
+    }
+
     [Header("Settings")]
     [SerializeField] private int maxRebirthLevel = 20;
-    [SerializeField] private int startingSpeedLevel = 18;
+    [SerializeField] private bool resetSpeedOnRebirth = true;
+    [SerializeField] private int startingSpeedLevel = 0;
+    [SerializeField] private RebirthRequirementType requirementType = RebirthRequirementType.SpeedLevel;
+    [SerializeField] private int baseSpeedRequirement = 40;
+    [SerializeField] private int speedRequirementStep = 10;
+    [SerializeField] private double baseCoinRequirement = 100_000d;
+    [SerializeField] private double coinRequirementGrowth = 2d;
 
     [Header("Save Keys")]
     [SerializeField] private string rebirthKey = "RebirthLevel";
@@ -47,7 +59,13 @@ public class RebirthSystem : MonoBehaviour
 
     public int GetRequiredSpeedForNext()
     {
-        return 40 + Mathf.Max(0, _rebirthLevel) * 10;
+        return baseSpeedRequirement + Mathf.Max(0, _rebirthLevel) * speedRequirementStep;
+    }
+
+    public double GetRequiredCoinsForNext()
+    {
+        double growth = System.Math.Max(1.01d, coinRequirementGrowth);
+        return System.Math.Round(baseCoinRequirement * System.Math.Pow(growth, Mathf.Max(0, _rebirthLevel)), System.MidpointRounding.AwayFromZero);
     }
 
     public float GetNextMultiplier()
@@ -56,16 +74,29 @@ public class RebirthSystem : MonoBehaviour
         return 1f + 0.5f * next;
     }
 
+    public bool CanRebirth()
+    {
+        if (_rebirthLevel >= maxRebirthLevel || speedController == null)
+        {
+            return false;
+        }
+
+        if (requirementType == RebirthRequirementType.Coins)
+        {
+            return speedController.CurrentCoins >= GetRequiredCoinsForNext();
+        }
+
+        return speedController.CurrentSpeedLevel >= GetRequiredSpeedForNext();
+    }
+
     public void TryRebirth()
     {
-        if (_rebirthLevel >= maxRebirthLevel)
+        if (!CanRebirth())
         {
             return;
         }
 
-        int required = GetRequiredSpeedForNext();
-        int currentSpeed = speedController != null ? speedController.CurrentSpeedLevel : 0;
-        if (currentSpeed < required)
+        if (requirementType == RebirthRequirementType.Coins && !speedController.TrySpendCoins(GetRequiredCoinsForNext()))
         {
             return;
         }
@@ -74,7 +105,7 @@ public class RebirthSystem : MonoBehaviour
         PlayerPrefs.SetInt(rebirthKey, _rebirthLevel);
         PlayerPrefs.Save();
 
-        if (speedController != null)
+        if (resetSpeedOnRebirth && speedController != null)
         {
             speedController.SetSpeedLevel(startingSpeedLevel);
         }
@@ -95,6 +126,8 @@ public class RebirthSystem : MonoBehaviour
     {
         int required = GetRequiredSpeedForNext();
         int currentSpeed = speedController != null ? speedController.CurrentSpeedLevel : 0;
+        double requiredCoins = GetRequiredCoinsForNext();
+        double currentCoins = speedController != null ? speedController.CurrentCoins : 0d;
 
         if (currentRebirthText != null)
         {
@@ -103,7 +136,7 @@ public class RebirthSystem : MonoBehaviour
 
         if (nextRebirthText != null)
         {
-            nextRebirthText.text = $"Rebirth {_rebirthLevel + 1}";
+            nextRebirthText.text = _rebirthLevel >= maxRebirthLevel ? "MAX" : $"Rebirth {_rebirthLevel + 1}";
         }
 
         if (currentMultiplierText != null)
@@ -118,14 +151,25 @@ public class RebirthSystem : MonoBehaviour
 
         if (speedProgressText != null)
         {
-            speedProgressText.text = $"Speed {currentSpeed}/{required}";
+            speedProgressText.text = requirementType == RebirthRequirementType.Coins
+                ? $"{UpgradeController.FormatCurrency(currentCoins)}/{UpgradeController.FormatCurrency(requiredCoins)}"
+                : $"Speed {currentSpeed}/{required}";
         }
 
         if (speedSlider != null)
         {
-            speedSlider.minValue = 0f;
-            speedSlider.maxValue = required;
-            speedSlider.value = currentSpeed;
+            if (requirementType == RebirthRequirementType.Coins)
+            {
+                speedSlider.minValue = 0f;
+                speedSlider.maxValue = 1f;
+                speedSlider.value = requiredCoins > 0d ? Mathf.Clamp01((float)(currentCoins / requiredCoins)) : 0f;
+            }
+            else
+            {
+                speedSlider.minValue = 0f;
+                speedSlider.maxValue = required;
+                speedSlider.value = currentSpeed;
+            }
         }
     }
 }

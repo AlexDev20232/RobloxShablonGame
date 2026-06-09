@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UpgradeItem : MonoBehaviour
 {
@@ -16,12 +17,24 @@ public class UpgradeItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI startValueTxt;
     [SerializeField] private TextMeshProUGUI EndValueTxt;
     [SerializeField] private UpgradeController controller;
+    [SerializeField] private Button buyButton;
 
     private void Awake()
     {
         if (controller == null)
         {
             controller = GetComponentInParent<UpgradeController>();
+        }
+
+        if (buyButton == null)
+        {
+            buyButton = GetComponentInChildren<Button>(true);
+        }
+
+        if (buyButton != null)
+        {
+            buyButton.onClick.RemoveListener(Buy);
+            buyButton.onClick.AddListener(Buy);
         }
     }
 

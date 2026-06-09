@@ -5,14 +5,26 @@ public class BrainrotBaseManager : MonoBehaviour
 {
     [Header("Slots")]
     [SerializeField] private BrainrotBaseSlot[] slots;
-    [SerializeField] private int startingUnlockedSlots = 10;
-    [SerializeField] private int maxSlots = 30;
-    [SerializeField] private bool autoUnlockFromRebirth = true;
+    [SerializeField] private int startingUnlockedSlots = 5;
+    [SerializeField] private int maxSlots = 10;
+    [SerializeField] private bool autoUnlockFromRebirth = false;
+
+    [Header("Save Keys")]
+    [SerializeField] private bool persistUnlockedSlots = true;
+    [SerializeField] private string unlockedSlotsKey = "BaseUnlockedSlots";
 
     private int _unlockedSlots;
 
     public int UnlockedSlots => _unlockedSlots;
-    public int MaxSlots => Mathf.Max(1, maxSlots);
+    public int SlotCount => slots != null ? slots.Length : 0;
+    public int MaxSlots
+    {
+        get
+        {
+            int configured = Mathf.Max(1, maxSlots);
+            return SlotCount > 0 ? Mathf.Clamp(configured, 1, SlotCount) : configured;
+        }
+    }
 
     private void Awake()
     {
@@ -22,7 +34,8 @@ public class BrainrotBaseManager : MonoBehaviour
         }
 
         SortSlots();
-        SetUnlockedSlots(Mathf.Clamp(startingUnlockedSlots, 0, MaxSlots));
+        int savedSlots = persistUnlockedSlots ? PlayerPrefs.GetInt(unlockedSlotsKey, startingUnlockedSlots) : startingUnlockedSlots;
+        ApplyUnlockedSlots(savedSlots, false);
     }
 
     public void ApplyRebirthLevel(int rebirthLevel)
@@ -32,7 +45,7 @@ public class BrainrotBaseManager : MonoBehaviour
             return;
         }
 
-        int target = Mathf.Clamp(10 + Mathf.Max(0, rebirthLevel), 0, MaxSlots);
+        int target = Mathf.Clamp(startingUnlockedSlots + Mathf.Max(0, rebirthLevel), 0, MaxSlots);
         if (target > _unlockedSlots)
         {
             SetUnlockedSlots(target);
@@ -40,6 +53,11 @@ public class BrainrotBaseManager : MonoBehaviour
     }
 
     public void SetUnlockedSlots(int count)
+    {
+        ApplyUnlockedSlots(count, true);
+    }
+
+    private void ApplyUnlockedSlots(int count, bool save)
     {
         int clamped = Mathf.Clamp(count, 0, MaxSlots);
         _unlockedSlots = clamped;
@@ -61,6 +79,12 @@ public class BrainrotBaseManager : MonoBehaviour
             slot.SetUnlocked(unlocked);
             slot.SetSlotIndex(i);
         }
+
+        if (save && persistUnlockedSlots)
+        {
+            PlayerPrefs.SetInt(unlockedSlotsKey, _unlockedSlots);
+            PlayerPrefs.Save();
+        }
     }
 
     public IEnumerable<BrainrotBaseSlot> GetSlots()
@@ -80,7 +104,29 @@ public class BrainrotBaseManager : MonoBehaviour
             if (a == null && b == null) return 0;
             if (a == null) return 1;
             if (b == null) return -1;
-            return a.SlotIndex.CompareTo(b.SlotIndex);
+
+            int indexCompare = a.SlotIndex.CompareTo(b.SlotIndex);
+            if (indexCompare != 0)
+            {
+                return indexCompare;
+            }
+
+            Vector3 aPosition = a.transform.position;
+            Vector3 bPosition = b.transform.position;
+
+            int yCompare = aPosition.y.CompareTo(bPosition.y);
+            if (yCompare != 0)
+            {
+                return yCompare;
+            }
+
+            int zCompare = aPosition.z.CompareTo(bPosition.z);
+            if (zCompare != 0)
+            {
+                return zCompare;
+            }
+
+            return aPosition.x.CompareTo(bPosition.x);
         });
     }
 }
