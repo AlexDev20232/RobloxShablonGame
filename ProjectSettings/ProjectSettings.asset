@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: EscapeTsunamiForBrainrots
+  productName: RobloxBrainrotTemplate
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -780,14 +780,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: EscapeTsunamiForBrainrots
+  metroPackageName: RobloxBrainrotTemplate
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: EscapeTsunamiForBrainrots
+  metroApplicationDescription: RobloxBrainrotTemplate
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -869,7 +869,7 @@ PlayerSettings:
   cloudProjectId: 46b2574a-0841-4707-bf4a-6ef543e85085
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: EscapeTsunamiForBrainrots
+  projectName: RobloxBrainrotTemplate
   organizationId: hex08
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
