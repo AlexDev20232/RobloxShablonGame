@@ -41,6 +41,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2403290413763810582}
   - component: {fileID: 6875866638061950494}
+  - component: {fileID: 6207923091132546559}
+  - component: {fileID: 292396544865962754}
   m_Layer: 0
   m_Name: FluriFlura
   m_TagString: Untagged
@@ -79,12 +81,54 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotDefinition
   title: Fluri Flura
   displayName: Fluri Flura
-  rarity: 0
-  type: 0
-  incomePerSecond: 0
+  rarity: 4
+  type: 3
+  incomePerSecond: 120
+  incomeLevelMultiplier: 1.25
+  upgradeCost1: 1200
+  upgradeCostGrowth: 1.45
   indexIcon: {fileID: 21300000, guid: 8b3888b81cd813e44979048e8700456c, type: 3}
   indexId: 6
   uiAnchor: {fileID: 9053476933860994710}
+--- !u!114 &6207923091132546559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3472401535793118593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8e33a58451d3a44a5e79f08cc3cbd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BrainrotIdleAnimator
+  target: {fileID: 0}
+  bobAmplitude: 0.08
+  bobSpeed: 1.35
+  yawAngle: 7
+  tiltAngle: 3
+  randomizePhase: 1
+--- !u!65 &292396544865962754
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3472401535793118593}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.8324845, y: 1.4105519, z: 1.1003609}
+  m_Center: {x: 0.002290368, y: 0.70586973, z: -0.023754656}
 --- !u!1001 &1702307558139186964
 PrefabInstance:
   m_ObjectHideFlags: 0

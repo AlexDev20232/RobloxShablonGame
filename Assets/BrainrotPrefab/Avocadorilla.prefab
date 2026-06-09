@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 5762435248324248834}
   - component: {fileID: 2184428595203986309}
   - component: {fileID: 1809264765730074908}
+  - component: {fileID: 4233170750420740108}
   m_Layer: 6
   m_Name: Avocadorilla
   m_TagString: Brainrot
@@ -80,9 +81,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotDefinition
   title: Avocadorilla
   displayName: Avocadorilla
-  rarity: 0
+  rarity: 1
   type: 0
-  incomePerSecond: 0
+  incomePerSecond: 14
+  incomeLevelMultiplier: 1.25
+  upgradeCost1: 125
+  upgradeCostGrowth: 1.33
   indexIcon: {fileID: 21300000, guid: b7b66eef5bc0d45419d8bed2f9b1fc54, type: 3}
   indexId: 3
   uiAnchor: {fileID: 2906955737517838021}
@@ -109,6 +113,24 @@ CapsuleCollider:
   m_Height: 2.0530345
   m_Direction: 1
   m_Center: {x: 0, y: 0.9136829, z: 0}
+--- !u!114 &4233170750420740108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6256958479853733980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8e33a58451d3a44a5e79f08cc3cbd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BrainrotIdleAnimator
+  target: {fileID: 0}
+  bobAmplitude: 0.08
+  bobSpeed: 1.35
+  yawAngle: 7
+  tiltAngle: 3
+  randomizePhase: 1
 --- !u!1 &6620753025102416679
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,7 @@ public class BrainrotSpawner : MonoBehaviour
 {
     [Header("Spawn Pool")]
     public BrainrotRarity rarity = BrainrotRarity.Common;
+    public bool overridePrefabRarity = false;
     public List<GameObject> prefabs = new List<GameObject>();
     public int maxActive = 8;
 
@@ -80,7 +81,10 @@ public class BrainrotSpawner : MonoBehaviour
             definition = instance.AddComponent<BrainrotDefinition>();
         }
 
-        definition.rarity = rarity;
+        if (overridePrefabRarity)
+        {
+            definition.rarity = rarity;
+        }
 
         BrainrotUI uiInstance = null;
         if (uiCanvasPrefab != null)

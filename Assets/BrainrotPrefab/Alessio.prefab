@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 418390430049633172}
   - component: {fileID: 3472654766418216503}
+  - component: {fileID: 34946063674548821}
+  - component: {fileID: 2585478018688032366}
   m_Layer: 0
   m_Name: Alessio
   m_TagString: Untagged
@@ -50,10 +52,52 @@ MonoBehaviour:
   displayName: Alessio
   rarity: 0
   type: 0
-  incomePerSecond: 0
+  incomePerSecond: 5
+  incomeLevelMultiplier: 1.25
+  upgradeCost1: 50
+  upgradeCostGrowth: 1.28
   indexIcon: {fileID: 21300000, guid: e4bcc3df1599a1841ad360c0fe6e394f, type: 3}
   indexId: 1
   uiAnchor: {fileID: 5588249480925996125}
+--- !u!114 &34946063674548821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329474631300241194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8e33a58451d3a44a5e79f08cc3cbd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BrainrotIdleAnimator
+  target: {fileID: 0}
+  bobAmplitude: 0.08
+  bobSpeed: 1.35
+  yawAngle: 7
+  tiltAngle: 3
+  randomizePhase: 1
+--- !u!65 &2585478018688032366
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329474631300241194}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.2820673, y: 1.9414921, z: 1.4584765}
+  m_Center: {x: -0.01166743, y: 0.93209, z: 0.110093534}
 --- !u!1 &363448827312541022
 GameObject:
   m_ObjectHideFlags: 0

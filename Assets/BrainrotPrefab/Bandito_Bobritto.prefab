@@ -73,6 +73,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7632184287871605335}
   - component: {fileID: 5432841840456777900}
+  - component: {fileID: 5759880601643035208}
+  - component: {fileID: 1752464518937016153}
   m_Layer: 0
   m_Name: Bandito_Bobritto
   m_TagString: Untagged
@@ -111,12 +113,54 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotDefinition
   title: Bandito_Bobritto
   displayName: Bandito Bobritto
-  rarity: 0
-  type: 0
-  incomePerSecond: 0
+  rarity: 2
+  type: 1
+  incomePerSecond: 28
+  incomeLevelMultiplier: 1.25
+  upgradeCost1: 250
+  upgradeCostGrowth: 1.36
   indexIcon: {fileID: 21300000, guid: 5b66e859496604e4b977ca58ddb2dd18, type: 3}
   indexId: 4
   uiAnchor: {fileID: 2080148203152396466}
+--- !u!114 &5759880601643035208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6045030195381033206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8e33a58451d3a44a5e79f08cc3cbd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BrainrotIdleAnimator
+  target: {fileID: 0}
+  bobAmplitude: 0.08
+  bobSpeed: 1.35
+  yawAngle: 7
+  tiltAngle: 3
+  randomizePhase: 1
+--- !u!65 &1752464518937016153
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6045030195381033206}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.1347897, y: 1.9729927, z: 0.71040815}
+  m_Center: {x: -0.010568976, y: 0.91471654, z: 0.1773191}
 --- !u!1001 &6589446563411163230
 PrefabInstance:
   m_ObjectHideFlags: 0
