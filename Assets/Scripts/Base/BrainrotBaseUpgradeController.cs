@@ -6,6 +6,7 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
     [Header("References")]
     [SerializeField] private BrainrotBaseManager baseManager;
     [SerializeField] private UpgradeController money;
+    [SerializeField] private BaseProgressionConfig progressionConfig;
 
     [Header("UI")]
     [SerializeField] private TMP_Text levelText;
@@ -58,7 +59,7 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
             return 0d;
         }
 
-        return GetCostForSlot(baseManager.UnlockedSlots + 1);
+        return GetCostForSlot(baseManager.GetNextSlotNumber());
     }
 
     public void TryUpgradeBase()
@@ -68,13 +69,12 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
             return;
         }
 
-        int currentSlots = baseManager.UnlockedSlots;
-        if (currentSlots >= baseManager.MaxSlots)
+        if (!baseManager.CanUnlockMoreSlots())
         {
             return;
         }
 
-        double cost = GetCostForSlot(currentSlots + 1);
+        double cost = GetNextSlotCost();
         if (cost <= 0d)
         {
             return;
@@ -85,12 +85,17 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
             return;
         }
 
-        baseManager.SetUnlockedSlots(currentSlots + 1);
+        baseManager.TryUnlockNextSlot();
         RefreshUI();
     }
 
     private double GetCostForSlot(int slotNumber)
     {
+        if (progressionConfig != null)
+        {
+            return progressionConfig.GetSlotCost(slotNumber);
+        }
+
         if (slotNumber < firstPaidSlotNumber)
         {
             return 0d;
@@ -117,14 +122,12 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
 
         if (levelText != null)
         {
-            int upgradeLevel = Mathf.Max(0, currentSlots - firstPaidSlotNumber + 1);
-            int maxUpgrade = Mathf.Max(0, maxSlots - firstPaidSlotNumber + 1);
-            levelText.text = $"{upgradeLevel}/{maxUpgrade}";
+            levelText.text = $"{currentSlots}/{maxSlots}";
         }
 
         if (priceText != null)
         {
-            double cost = GetCostForSlot(currentSlots + 1);
+            double cost = GetNextSlotCost();
             priceText.text = cost > 0d ? UpgradeController.FormatCurrency(cost) : "MAX";
         }
     }

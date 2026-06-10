@@ -1,0 +1,38 @@
+﻿%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f0e815f1df34df2a7cb6b39d7ab36cb, type: 3}
+  m_Name: BaseProgression_Default
+  m_EditorClassIdentifier:
+  baseMultiplier: 1
+  multiplierPerRebirth: 0.5
+  firstPaidSlotNumber: 11
+  slotUpgradeCosts:
+  - 50000
+  - 125000
+  - 300000
+  - 750000
+  - 1500000
+  - 4000000
+  - 10000000
+  - 25000000
+  - 60000000
+  - 150000000
+  - 350000000
+  - 800000000
+  - 1500000000
+  - 3000000000
+  - 7500000000
+  - 15000000000
+  - 35000000000
+  - 80000000000
+  - 175000000000
+  - 400000000000

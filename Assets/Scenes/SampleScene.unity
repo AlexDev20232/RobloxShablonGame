@@ -8329,9 +8329,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseUpgradeController
   baseManager: {fileID: 1733427262}
   money: {fileID: 1863533473}
+  progressionConfig: {fileID: 11400000, guid: 6f6d6122b12d49179e0d4f73e39a9f49, type: 2}
   levelText: {fileID: 0}
   priceText: {fileID: 0}
-  firstPaidSlotNumber: 6
+  firstPaidSlotNumber: 11
   slotUpgradeCosts:
   - 500
   - 2500
@@ -8359,6 +8360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cf96763c22247f49a9b1b0c4737cb5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RebirthSystem
+  progressionConfig: {fileID: 11400000, guid: 6f6d6122b12d49179e0d4f73e39a9f49, type: 2}
   maxRebirthLevel: 20
   resetSpeedOnRebirth: 1
   startingSpeedLevel: 0
@@ -30451,11 +30453,17 @@ MonoBehaviour:
   - {fileID: 1122396781}
   - {fileID: 1388568133}
   - {fileID: 251187940}
+  autoCollectSlots: 1
   startingUnlockedSlots: 10
   maxSlots: 30
   unlockFirstFloorByDefault: 1
   firstFloorName: FirstFloor
   autoUnlockFromRebirth: 0
+  hideLockedFloors: 1
+  floorNames:
+  - FirstFloor
+  - 2Floor
+  - 3Floor
   persistUnlockedSlots: 1
   keepSavedSlotsAtLeastDefault: 1
   unlockedSlotsKey: BaseUnlockedSlots
@@ -33827,6 +33835,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1986314832}
+  - component: {fileID: 1986314833}
   m_Layer: 0
   m_Name: BaseParametrs
   m_TagString: Untagged
@@ -33855,6 +33864,25 @@ Transform:
   - {fileID: 762863915}
   m_Father: {fileID: 1733427261}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1986314833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1986314831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3e2a1c6fd3d4cb8a9dd6fe9a5b14d72, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  baseManager: {fileID: 1733427262}
+  baseUpgrade: {fileID: 507887380}
+  rebirthSystem: {fileID: 507887381}
+  multiplierText: {fileID: 1990152563}
+  nextSlotCostText: {fileID: 2084324519}
+  slotProgressText: {fileID: 0}
+  refreshInterval: 0.2
 --- !u!1 &1990152562
 GameObject:
   m_ObjectHideFlags: 0

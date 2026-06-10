@@ -11,6 +11,7 @@ public class RebirthSystem : MonoBehaviour
     }
 
     [Header("Settings")]
+    [SerializeField] private BaseProgressionConfig progressionConfig;
     [SerializeField] private int maxRebirthLevel = 20;
     [SerializeField] private bool resetSpeedOnRebirth = true;
     [SerializeField] private int startingSpeedLevel = 0;
@@ -38,7 +39,7 @@ public class RebirthSystem : MonoBehaviour
     private int _rebirthLevel;
 
     public int CurrentRebirth => _rebirthLevel;
-    public float CurrentMultiplier => 1f + 0.5f * _rebirthLevel;
+    public float CurrentMultiplier => progressionConfig != null ? progressionConfig.GetMultiplier(_rebirthLevel) : 1f + 0.5f * _rebirthLevel;
 
     private void Awake()
     {
@@ -71,7 +72,7 @@ public class RebirthSystem : MonoBehaviour
     public float GetNextMultiplier()
     {
         int next = Mathf.Clamp(_rebirthLevel + 1, 0, maxRebirthLevel);
-        return 1f + 0.5f * next;
+        return progressionConfig != null ? progressionConfig.GetMultiplier(next) : 1f + 0.5f * next;
     }
 
     public bool CanRebirth()
