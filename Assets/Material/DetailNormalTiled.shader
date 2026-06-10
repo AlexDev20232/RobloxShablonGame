@@ -7,8 +7,7 @@ Shader "Custom/DetailNormalTiled"
         _BumpMap ("Detail Normal", 2D) = "bump" {}
         _NormalStrength ("Normal Strength", Range(0, 5)) = 1
         _Roughness ("Roughness (0=Smooth 1=Rough)", Range(0, 1)) = 0.6
-        _WorldScale ("World Tiling", Float) = 1
-        _Mapping ("UV Plane (0=XY 1=XZ 2=YZ 3=Auto)", Range(0, 3)) = 3
+        _Mapping ("UV Plane (0=XY 1=XZ 2=YZ)", Range(0, 2)) = 1
     }
     SubShader
     {
@@ -16,79 +15,56 @@ Shader "Custom/DetailNormalTiled"
         LOD 200
 
         CGPROGRAM
-        #pragma surface surf Standard fullforwardshadows
+        #pragma surface surf Standard fullforwardshadows vertex:vert
         #pragma target 3.0
 
         sampler2D _MainTex;
-        float4 _MainTex_ST;
         sampler2D _BumpMap;
         float4 _BumpMap_ST;
         float4 _Color;
         float _NormalStrength;
         float _Roughness;
-        float _WorldScale;
         float _Mapping;
 
         struct Input
         {
-            float3 worldPos;
-            float3 worldNormal;
-            INTERNAL_DATA
+            float2 uv_MainTex;
+            float2 detailUV;
         };
 
-        float2 GetWorldUV(float3 worldPos, float3 worldNormal)
+        void vert(inout appdata_full v, out Input o)
         {
+            UNITY_INITIALIZE_OUTPUT(Input, o);
+
+            float3 axisX = mul(unity_ObjectToWorld, float4(1, 0, 0, 0)).xyz;
+            float3 axisY = mul(unity_ObjectToWorld, float4(0, 1, 0, 0)).xyz;
+            float3 axisZ = mul(unity_ObjectToWorld, float4(0, 0, 1, 0)).xyz;
+            float3 scale = float3(length(axisX), length(axisY), length(axisZ));
+
+            float2 scaleUV;
             if (_Mapping < 0.5)
             {
-                return worldPos.xy;
+                scaleUV = float2(scale.x, scale.y);
             }
-
-            if (_Mapping < 1.5)
+            else if (_Mapping < 1.5)
             {
-                return worldPos.xz;
+                scaleUV = float2(scale.x, scale.z);
             }
-
-            if (_Mapping < 2.5)
+            else
             {
-                return worldPos.zy;
+                scaleUV = float2(scale.y, scale.z);
             }
 
-            float3 n = abs(normalize(worldNormal));
-            if (n.y >= n.x && n.y >= n.z)
-            {
-                return worldPos.xz;
-            }
-
-            if (n.x >= n.z)
-            {
-                return worldPos.zy;
-            }
-
-            return worldPos.xy;
-        }
-
-        float2 ApplyTiling(float2 worldUV, float4 textureST)
-        {
-            float2 tiling = textureST.xy;
-            if (_Mapping > 2.5)
-            {
-                float uniformTiling = max(abs(tiling.x), abs(tiling.y));
-                tiling = float2(uniformTiling, uniformTiling);
-            }
-
-            return worldUV * tiling + textureST.zw;
+            float2 detailUV = v.texcoord.xy * scaleUV;
+            o.detailUV = detailUV * _BumpMap_ST.xy + _BumpMap_ST.zw;
         }
 
         void surf(Input IN, inout SurfaceOutputStandard o)
         {
-            float2 worldUV = GetWorldUV(IN.worldPos, IN.worldNormal) * max(_WorldScale, 0.0001);
-            float2 baseUV = ApplyTiling(worldUV, _MainTex_ST);
-            float2 normalUV = ApplyTiling(worldUV, _BumpMap_ST);
-
-            fixed4 baseTex = tex2D(_MainTex, baseUV);
+            fixed4 baseTex = tex2D(_MainTex, IN.uv_MainTex);
             o.Albedo = baseTex.rgb * _Color.rgb;
 
-            fixed3 normalSample = UnpackNormal(tex2D(_BumpMap, normalUV));
+            fixed3 normalSample = UnpackNormal(tex2D(_BumpMap, IN.detailUV));
             normalSample.xy *= _NormalStrength;
             normalSample.z = sqrt(saturate(1.0 - dot(normalSample.xy, normalSample.xy)));
             o.Normal = normalSample;

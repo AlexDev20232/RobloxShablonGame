@@ -33,10 +33,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Mapping: 3
-    - _NormalStrength: 0.9
+    - _Mapping: 1
+    - _NormalStrength: 1.2
     - _Roughness: 1
     m_Colors:
-    - _Color: {r: 0.95, g: 0.47, b: 0.14, a: 1}
+    - _Color: {r: 0.90188676, g: 0.47229767, b: 0.025524942, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

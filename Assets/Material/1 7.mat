@@ -33,7 +33,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Mapping: 3
+    - _Mapping: 1
     - _NormalStrength: 1.68
     - _Roughness: 1
     m_Colors:
