@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Base
+  m_Name: Base 12
   m_Shader: {fileID: 4800000, guid: 9c8fb24f3ab8c414ca990846e0dee459, type: 3}
   m_Parent: {fileID: 2100000, guid: 0dcbcff4096fc9c428d311c5e951b873, type: 2}
   m_ModifiedSerializedProperties: 0
@@ -24,12 +24,12 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 5fe7efa27a893cb4b94ec344e06afa71, type: 3}
-        m_Scale: {x: 0.71, y: 0.73}
-        m_Offset: {x: -0.05, y: 0}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 0.58, y: 0.68}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats: []
     m_Colors:
-    - _Color: {r: 0.8792453, g: 0.4101054, b: 0, a: 1}
+    - _Color: {r: 0.7584905, g: 0.35944065, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
