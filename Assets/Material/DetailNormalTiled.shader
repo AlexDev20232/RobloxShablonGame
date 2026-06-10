@@ -67,11 +67,23 @@ Shader "Custom/DetailNormalTiled"
             return worldPos.xy;
         }
 
+        float2 ApplyTiling(float2 worldUV, float4 textureST)
+        {
+            float2 tiling = textureST.xy;
+            if (_Mapping > 2.5)
+            {
+                float uniformTiling = max(abs(tiling.x), abs(tiling.y));
+                tiling = float2(uniformTiling, uniformTiling);
+            }
+
+            return worldUV * tiling + textureST.zw;
+        }
+
         void surf(Input IN, inout SurfaceOutputStandard o)
         {
             float2 worldUV = GetWorldUV(IN.worldPos, IN.worldNormal) * max(_WorldScale, 0.0001);
-            float2 baseUV = worldUV * _MainTex_ST.xy + _MainTex_ST.zw;
-            float2 normalUV = worldUV * _BumpMap_ST.xy + _BumpMap_ST.zw;
+            float2 baseUV = ApplyTiling(worldUV, _MainTex_ST);
+            float2 normalUV = ApplyTiling(worldUV, _BumpMap_ST);
 
             fixed4 baseTex = tex2D(_MainTex, baseUV);
             o.Albedo = baseTex.rgb * _Color.rgb;

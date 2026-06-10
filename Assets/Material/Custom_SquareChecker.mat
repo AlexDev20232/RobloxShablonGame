@@ -30,9 +30,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _GridScale: 1.26
-    - _SquareOpacity: 0.8
-    - _SquareSize: 0.38
-    - _TexBlend: 0
+    - _SquareOpacity: 0.1
+    - _SquareSize: 1
+    - _TexBlend: 1
     m_Colors:
     - _ColorA: {r: 0.12, g: 0.72, b: 0.09, a: 1}
     - _ColorB: {r: 0.075, g: 0.58, b: 0.06, a: 1}
