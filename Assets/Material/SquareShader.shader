@@ -2,14 +2,18 @@ Shader "Custom/SquareChecker"
 {
     Properties
     {
-        _ColorA ("Base Green", Color) = (0.2, 0.8, 0.2, 1)
-        _ColorB ("Dark Square", Color) = (0.0, 0.4, 0.0, 1)
-        _ColorC ("Light Square", Color) = (0.35, 0.9, 0.35, 1)
-        _GridScale ("Squares Per Unit", Float) = 8
-        _SquareSize ("Square Size", Range(0, 1)) = 0.7
+        _Color ("Tint", Color) = (1, 1, 1, 1)
+        _ColorA ("Base Tint", Color) = (1, 1, 1, 1)
+        _ColorB ("Dark Cell", Color) = (0.82, 0.82, 0.82, 1)
+        _ColorC ("Light Cell", Color) = (1.08, 1.08, 1.08, 1)
+        _GridScale ("Squares Per Unit", Float) = 1.25
+        _SquareSize ("Lego Square Size", Range(0, 1)) = 0.38
         _SquareOpacity ("Square Opacity", Range(0, 1)) = 1
+        _BorderWidth ("Cell Border Width", Range(0, 0.2)) = 0.035
+        _BorderStrength ("Cell Border Strength", Range(0, 1)) = 0.16
+        _BevelStrength ("Lego Bevel Strength", Range(0, 1)) = 0.18
         _MainTex ("Overlay Texture", 2D) = "white" {}
-        _TexBlend ("Detail Strength", Range(0, 1)) = 1
+        _TexBlend ("Texture Detail Strength", Range(0, 1)) = 0
     }
     SubShader
     {
@@ -21,6 +25,7 @@ Shader "Custom/SquareChecker"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.0
             #include "UnityCG.cginc"
 
             struct appdata
@@ -39,12 +44,16 @@ Shader "Custom/SquareChecker"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _Color;
             float4 _ColorA;
             float4 _ColorB;
             float4 _ColorC;
             float _GridScale;
             float _SquareSize;
             float _SquareOpacity;
+            float _BorderWidth;
+            float _BorderStrength;
+            float _BevelStrength;
             float _TexBlend;
 
             v2f vert(appdata v)
@@ -79,12 +88,24 @@ Shader "Custom/SquareChecker"
                 float2 cellIndex = floor(scaledUV);
                 float2 cellUV = frac(scaledUV);
                 float2 centered = abs(cellUV - 0.5);
+                float maxCenter = max(centered.x, centered.y);
                 float halfSize = saturate(_SquareSize) * 0.5;
-                float squareMask = step(centered.x, halfSize) * step(centered.y, halfSize);
+                float aa = max(fwidth(maxCenter), 0.001);
+                float squareMask = 1.0 - smoothstep(halfSize - aa, halfSize + aa, maxCenter);
                 float squareFactor = squareMask * saturate(_SquareOpacity);
                 float parity = fmod(cellIndex.x + cellIndex.y, 2.0);
-                fixed4 squareCol = lerp(_ColorB, _ColorC, parity);
-                fixed4 baseCol = lerp(_ColorA, squareCol, squareFactor);
+                fixed4 cellCol = lerp(_ColorB, _ColorC, parity) * _Color;
+                fixed4 tileCol = lerp(_ColorA * _Color, cellCol, 0.45);
+
+                float edgeDistance = min(min(cellUV.x, 1.0 - cellUV.x), min(cellUV.y, 1.0 - cellUV.y));
+                float borderMask = 1.0 - smoothstep(max(_BorderWidth - aa, 0.0), _BorderWidth + aa, edgeDistance);
+                fixed4 baseCol = tileCol * (1.0 - borderMask * saturate(_BorderStrength));
+
+                float insetDistance = saturate((halfSize - maxCenter) / max(halfSize, 0.001));
+                float bevel = lerp(1.0 - _BevelStrength, 1.0 + _BevelStrength, insetDistance);
+                fixed4 studCol = cellCol * bevel;
+                baseCol = lerp(baseCol, studCol, squareFactor);
+
                 float2 overlayUV = worldUV * _MainTex_ST.xy + _MainTex_ST.zw;
                 fixed4 texCol = tex2D(_MainTex, overlayUV);
                 float texGray = dot(texCol.rgb, float3(0.299, 0.587, 0.114));
