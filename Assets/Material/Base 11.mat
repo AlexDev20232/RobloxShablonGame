@@ -26,9 +26,10 @@ Material:
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: 5fe7efa27a893cb4b94ec344e06afa71, type: 3}
         m_Scale: {x: 0.58, y: 0.68}
-        m_Offset: {x: 0, y: 0}
+        m_Offset: {x: 0.4, y: 0.05}
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _Mapping: 0.69
     m_Colors:
     - _Color: {r: 0.7584905, g: 0.35944065, b: 0, a: 1}
   m_BuildTextureStacks: []
