@@ -20,6 +20,9 @@ public class BrainrotIndexItemUI : MonoBehaviour
     [SerializeField] private Color goldColor = new Color(1f, 0.8f, 0.1f, 1f);
     [SerializeField] private Color diamondColor = new Color(0.3f, 0.9f, 1f, 1f);
     [SerializeField] private Color emeraldColor = new Color(0.1f, 1f, 0.4f, 1f);
+    [SerializeField] private Color lavaColor = new Color(1f, 0.35f, 0.05f, 1f);
+    [SerializeField] private Color galaxyColor = new Color(0.55f, 0.25f, 1f, 1f);
+    [SerializeField] private Color rainbowColor = new Color(1f, 0.2f, 0.7f, 1f);
 
     public void Bind(BrainrotDefinition def, bool unlocked)
     {
@@ -75,6 +78,12 @@ public class BrainrotIndexItemUI : MonoBehaviour
                 return diamondColor;
             case BrainrotType.Emerald:
                 return emeraldColor;
+            case BrainrotType.Lava:
+                return lavaColor;
+            case BrainrotType.Galaxy:
+                return galaxyColor;
+            case BrainrotType.Rainbow:
+                return rainbowColor;
             default:
                 return normalColor;
         }

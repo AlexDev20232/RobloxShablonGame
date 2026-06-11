@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class BrainrotBaseManager : MonoBehaviour
@@ -17,12 +18,21 @@ public class BrainrotBaseManager : MonoBehaviour
     [SerializeField] private bool hideLockedFloors = true;
     [SerializeField] private string[] floorNames = { "FirstFloor", "2Floor", "3Floor" };
 
+    [Header("Placed Brainrots")]
+    [SerializeField] private BrainrotCatalog catalog;
+    [SerializeField] private bool persistPlacedBrainrots = true;
+    [SerializeField] private float placedSaveInterval = 3f;
+
     [Header("Save Keys")]
     [SerializeField] private bool persistUnlockedSlots = true;
     [SerializeField] private bool keepSavedSlotsAtLeastDefault = true;
     [SerializeField] private string unlockedSlotsKey = "BaseUnlockedSlots";
+    [SerializeField] private string placedSlotsKey = "BasePlacedBrainrots";
 
     private int _unlockedSlots;
+    private float _nextPlacedSaveTime;
+
+    private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
     public event Action SlotsChanged;
 
@@ -41,6 +51,7 @@ public class BrainrotBaseManager : MonoBehaviour
     {
         CollectSlots();
         SortSlots();
+        BindSlotEvents();
         int defaultSlots = GetDefaultUnlockedSlotCount();
         int savedSlots = persistUnlockedSlots ? PlayerPrefs.GetInt(unlockedSlotsKey, defaultSlots) : defaultSlots;
         if (keepSavedSlotsAtLeastDefault)
@@ -49,6 +60,25 @@ public class BrainrotBaseManager : MonoBehaviour
         }
 
         ApplyUnlockedSlots(savedSlots, false);
+        LoadPlacedBrainrots();
+    }
+
+    private void Update()
+    {
+        if (!persistPlacedBrainrots || Time.time < _nextPlacedSaveTime)
+        {
+            return;
+        }
+
+        SavePlacedBrainrots();
+    }
+
+    private void OnDisable()
+    {
+        if (persistPlacedBrainrots)
+        {
+            SavePlacedBrainrots();
+        }
     }
 
     public void ApplyRebirthLevel(int rebirthLevel)
@@ -153,7 +183,67 @@ public class BrainrotBaseManager : MonoBehaviour
 
     public IEnumerable<BrainrotBaseSlot> GetSlots()
     {
-        return slots;
+        return slots ?? Array.Empty<BrainrotBaseSlot>();
+    }
+
+    public double GetTotalIncomePerSecond()
+    {
+        double total = 0d;
+        if (slots == null)
+        {
+            return total;
+        }
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            BrainrotBaseSlot slot = slots[i];
+            if (slot != null && slot.IsUnlocked)
+            {
+                total += slot.GetIncomePerSecond();
+            }
+        }
+
+        return total;
+    }
+
+    public double GetTotalStoredAmount()
+    {
+        double total = 0d;
+        if (slots == null)
+        {
+            return total;
+        }
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            BrainrotBaseSlot slot = slots[i];
+            if (slot != null)
+            {
+                total += slot.StoredAmount;
+            }
+        }
+
+        return total;
+    }
+
+    public double CollectAllStored()
+    {
+        double total = 0d;
+        if (slots == null)
+        {
+            return total;
+        }
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            BrainrotBaseSlot slot = slots[i];
+            if (slot != null)
+            {
+                total += slot.CollectStored();
+            }
+        }
+
+        return total;
     }
 
     private void SortSlots()
@@ -210,6 +300,147 @@ public class BrainrotBaseManager : MonoBehaviour
         }
 
         slots = GetComponentsInChildren<BrainrotBaseSlot>(true);
+    }
+
+    private void BindSlotEvents()
+    {
+        if (slots == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] == null)
+            {
+                continue;
+            }
+
+            slots[i].Changed -= HandleSlotChanged;
+            slots[i].Changed += HandleSlotChanged;
+        }
+    }
+
+    private void HandleSlotChanged(BrainrotBaseSlot slot)
+    {
+        MarkPlacedSaveDirty();
+    }
+
+    private void MarkPlacedSaveDirty()
+    {
+        if (!persistPlacedBrainrots)
+        {
+            return;
+        }
+
+        _nextPlacedSaveTime = Mathf.Min(_nextPlacedSaveTime, Time.time + 0.25f);
+    }
+
+    private void SavePlacedBrainrots()
+    {
+        if (!persistPlacedBrainrots || slots == null)
+        {
+            return;
+        }
+
+        BrainrotBaseSaveData data = new BrainrotBaseSaveData();
+        List<BrainrotBaseSlotSaveData> savedSlots = new List<BrainrotBaseSlotSaveData>();
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            BrainrotBaseSlot slot = slots[i];
+            if (slot == null || !slot.IsOccupied)
+            {
+                continue;
+            }
+
+            savedSlots.Add(new BrainrotBaseSlotSaveData
+            {
+                slotIndex = slot.SlotIndex,
+                collectionId = slot.OccupantCollectionId,
+                level = slot.Level,
+                stored = slot.StoredAmount.ToString("R", Invariant)
+            });
+        }
+
+        data.slots = savedSlots.ToArray();
+        PlayerPrefs.SetString(placedSlotsKey, JsonUtility.ToJson(data));
+        PlayerPrefs.Save();
+        _nextPlacedSaveTime = Time.time + Mathf.Max(0.25f, placedSaveInterval);
+    }
+
+    private void LoadPlacedBrainrots()
+    {
+        if (!persistPlacedBrainrots || catalog == null || slots == null || !PlayerPrefs.HasKey(placedSlotsKey))
+        {
+            return;
+        }
+
+        BrainrotBaseSaveData data;
+        try
+        {
+            data = JsonUtility.FromJson<BrainrotBaseSaveData>(PlayerPrefs.GetString(placedSlotsKey));
+        }
+        catch (Exception)
+        {
+            return;
+        }
+
+        if (data == null || data.slots == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < data.slots.Length; i++)
+        {
+            BrainrotBaseSlotSaveData slotData = data.slots[i];
+            BrainrotBaseSlot slot = FindSlot(slotData.slotIndex);
+            if (slot == null || !slot.IsUnlocked || string.IsNullOrWhiteSpace(slotData.collectionId))
+            {
+                continue;
+            }
+
+            if (!catalog.TryInstantiate(slotData.collectionId, null, out BrainrotDefinition definition))
+            {
+                continue;
+            }
+
+            double stored = ParseDouble(slotData.stored);
+            if (!slot.Place(definition, slotData.level, stored, false))
+            {
+                Destroy(definition.gameObject);
+            }
+        }
+
+        _nextPlacedSaveTime = Time.time + Mathf.Max(0.25f, placedSaveInterval);
+    }
+
+    private BrainrotBaseSlot FindSlot(int slotIndex)
+    {
+        if (slots == null)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] != null && slots[i].SlotIndex == slotIndex)
+            {
+                return slots[i];
+            }
+        }
+
+        return null;
+    }
+
+    private static double ParseDouble(string value)
+    {
+        if (double.TryParse(value, NumberStyles.Float, Invariant, out double result))
+        {
+            return Math.Max(0d, result);
+        }
+
+        return 0d;
     }
 
     public int GetDefaultUnlockedSlotCount()
@@ -352,4 +583,19 @@ public class BrainrotBaseManager : MonoBehaviour
 
         return false;
     }
+}
+
+[Serializable]
+public class BrainrotBaseSaveData
+{
+    public BrainrotBaseSlotSaveData[] slots;
+}
+
+[Serializable]
+public class BrainrotBaseSlotSaveData
+{
+    public int slotIndex;
+    public string collectionId;
+    public int level = 1;
+    public string stored = "0";
 }

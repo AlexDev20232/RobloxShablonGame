@@ -32,6 +32,10 @@ public class BrainrotBaseSlot : MonoBehaviour
     [SerializeField] private bool updateStoredUi = true;
     [SerializeField] private float uiRefreshInterval = 0.25f;
 
+    [Header("Level Visual")]
+    [SerializeField] private float levelScaleStep = 0.05f;
+    [SerializeField] private float maxLevelScaleMultiplier = 1.5f;
+
     private PurchasePrompt _promptInstance;
     private BrainrotDefinition _occupant;
     private int _level = 1;
@@ -40,13 +44,20 @@ public class BrainrotBaseSlot : MonoBehaviour
     private float _holdTimer;
     private float _nextUiRefreshTime;
     private double _stored;
+    private Vector3 _baseOccupantScale = Vector3.one;
 
     private UpgradeController _money;
     private RebirthSystem _rebirth;
 
+    public event Action<BrainrotBaseSlot> Changed;
+
     public int SlotIndex => slotIndex;
     public bool IsUnlocked => _unlocked;
     public bool IsOccupied => _occupant != null;
+    public BrainrotDefinition Occupant => _occupant;
+    public int Level => _level;
+    public double StoredAmount => _stored;
+    public string OccupantCollectionId => _occupant != null ? _occupant.GetCollectionId() : string.Empty;
 
     private void Awake()
     {
@@ -144,8 +155,7 @@ public class BrainrotBaseSlot : MonoBehaviour
             return 0d;
         }
 
-        double income = _occupant.incomePerSecond;
-        income *= Math.Pow(_occupant.incomeLevelMultiplier, Mathf.Max(0, _level - 1));
+        double income = _occupant.GetIncomeForLevel(_level);
 
         float mult = _rebirth != null ? _rebirth.CurrentMultiplier : 1f;
         return income * mult;
@@ -165,7 +175,9 @@ public class BrainrotBaseSlot : MonoBehaviour
         }
 
         _level++;
+        ApplyLevelScale();
         RefreshUI();
+        NotifyChanged();
     }
 
     private double GetUpgradeCost()
@@ -175,10 +187,7 @@ public class BrainrotBaseSlot : MonoBehaviour
             return 0d;
         }
 
-        int levelIndex = Mathf.Max(0, _level - 1);
-        double baseCost = Math.Max(0d, _occupant.upgradeCost1);
-        double growth = Math.Max(1.01d, _occupant.upgradeCostGrowth);
-        return Math.Round(baseCost * Math.Pow(growth, levelIndex), MidpointRounding.AwayFromZero);
+        return _occupant.GetUpgradeCostForLevel(_level);
     }
 
     private void PlaceFromInventory()
@@ -193,9 +202,20 @@ public class BrainrotBaseSlot : MonoBehaviour
             return;
         }
 
+        Place(def, 1, 0d, true);
+        SetPromptActive(false);
+    }
+
+    public bool Place(BrainrotDefinition def, int level = 1, double storedAmount = 0d, bool unlockIndex = true)
+    {
+        if (def == null || _occupant != null)
+        {
+            return false;
+        }
+
         _occupant = def;
-        _level = 1;
-        _stored = 0d;
+        _level = Mathf.Max(1, level);
+        _stored = Math.Max(0d, storedAmount);
 
         def.SetInBase(true);
         def.gameObject.SetActive(true);
@@ -207,8 +227,20 @@ public class BrainrotBaseSlot : MonoBehaviour
         def.transform.localRotation = Quaternion.identity;
 
         RestoreWorldScale(def.transform, worldScale);
+        _baseOccupantScale = def.transform.localScale;
+        ApplyLevelScale();
         ApplyPlacedRotation(def.transform);
-        BrainrotIndexData.Unlock(def);
+
+        if (unlockIndex)
+        {
+            BrainrotIndexData.Unlock(def);
+        }
+
+        BrainrotSkinApplier skin = def.GetComponentInChildren<BrainrotSkinApplier>(true);
+        if (skin != null)
+        {
+            skin.Apply();
+        }
 
         BrainrotLifetime lifetime = def.GetComponent<BrainrotLifetime>();
         if (lifetime != null)
@@ -223,7 +255,8 @@ public class BrainrotBaseSlot : MonoBehaviour
         }
 
         RefreshUI();
-        SetPromptActive(false);
+        NotifyChanged();
+        return true;
     }
 
     public void RefreshUI()
@@ -248,20 +281,23 @@ public class BrainrotBaseSlot : MonoBehaviour
         UpdateStoredUI();
     }
 
-    public void CollectStored()
+    public double CollectStored()
     {
         if (_stored <= 0d)
         {
-            return;
+            return 0d;
         }
 
+        double collected = _stored;
         if (_money != null)
         {
-            _money.AddCoins(_stored);
+            _money.AddCoins(collected);
         }
 
         _stored = 0d;
         UpdateStoredUI();
+        NotifyChanged();
+        return collected;
     }
 
     private void UpdateStoredUI()
@@ -272,6 +308,24 @@ public class BrainrotBaseSlot : MonoBehaviour
         }
 
         slotUI.SetStored(UpgradeController.FormatCurrency(_stored));
+    }
+
+    private void ApplyLevelScale()
+    {
+        if (_occupant == null)
+        {
+            return;
+        }
+
+        float step = Mathf.Max(0f, levelScaleStep);
+        float maxMultiplier = Mathf.Max(1f, maxLevelScaleMultiplier);
+        float multiplier = Mathf.Min(maxMultiplier, 1f + step * Mathf.Max(0, _level - 1));
+        _occupant.transform.localScale = _baseOccupantScale * multiplier;
+    }
+
+    private void NotifyChanged()
+    {
+        Changed?.Invoke(this);
     }
 
     private static void RestoreWorldScale(Transform target, Vector3 worldScale)

@@ -3,5 +3,8 @@ public enum BrainrotType
     Normal,
     Gold,
     Diamond,
-    Emerald
+    Emerald,
+    Lava,
+    Galaxy,
+    Rainbow
 }

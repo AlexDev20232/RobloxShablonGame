@@ -8,6 +8,7 @@ using UnityEditor;
 public class BrainrotIndexMenu : MonoBehaviour
 {
     [Header("Data")]
+    [SerializeField] private BrainrotCatalog catalog;
     [SerializeField] private BrainrotDefinition[] entries;
     [SerializeField] private bool autoPopulateEntries = true;
     [SerializeField] private bool includeActiveDefinitions = true;
@@ -137,6 +138,11 @@ public class BrainrotIndexMenu : MonoBehaviour
     {
         List<BrainrotDefinition> list = new List<BrainrotDefinition>();
 
+        if (catalog != null)
+        {
+            catalog.AddDefinitionsTo(list);
+        }
+
         AddEntries(list, entries);
         if (!autoPopulateEntries)
         {
@@ -204,10 +210,10 @@ public class BrainrotIndexMenu : MonoBehaviour
             return;
         }
 
-        string id = def.GetIndexId();
+        string id = def.GetCollectionId();
         for (int i = 0; i < list.Count; i++)
         {
-            if (list[i] != null && list[i].GetIndexId() == id)
+            if (list[i] != null && list[i].GetCollectionId() == id)
             {
                 return;
             }

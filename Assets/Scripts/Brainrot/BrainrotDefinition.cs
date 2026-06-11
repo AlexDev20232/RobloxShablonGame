@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,6 +51,27 @@ public class BrainrotDefinition : MonoBehaviour
         }
 
         return fallback;
+    }
+
+    public string GetCollectionId()
+    {
+        return type + ":" + GetIndexId();
+    }
+
+    public double GetIncomeForLevel(int level)
+    {
+        int safeLevel = Mathf.Max(1, level);
+        double baseIncome = Math.Max(0d, incomePerSecond);
+        double growth = Math.Max(1d, incomeLevelMultiplier);
+        return baseIncome * Math.Pow(growth, safeLevel - 1);
+    }
+
+    public double GetUpgradeCostForLevel(int currentLevel)
+    {
+        int levelIndex = Mathf.Max(0, currentLevel - 1);
+        double baseCost = Math.Max(0d, upgradeCost1);
+        double growth = Math.Max(1.01d, upgradeCostGrowth);
+        return Math.Round(baseCost * Math.Pow(growth, levelIndex), MidpointRounding.AwayFromZero);
     }
 
     private void OnEnable()

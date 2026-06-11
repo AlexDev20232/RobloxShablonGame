@@ -31,10 +31,15 @@ public class SimpleRobloxController : MonoBehaviour
     [SerializeField] private float jumpPower = 8.5f;
     [SerializeField] private float gravity = -28f;
     [SerializeField] private float groundedGravity = -2f;
+    [SerializeField] private float coyoteTime = 0.12f;
+    [SerializeField] private float jumpBufferTime = 0.12f;
+    [SerializeField] private float fallMultiplier = 1.25f;
+    [SerializeField] private float lowJumpMultiplier = 1.55f;
 
     [Header("Animation")]
     [SerializeField] private string speedParam = "Speed";
     [SerializeField] private string groundedParam = "IsGrounded";
+    [SerializeField] private string jumpTriggerParam = "Jump";
     [SerializeField] private string runMultParam = "RunSpeedMultiplier";
     [SerializeField] private float speedDampTime = 0.08f;
     [SerializeField] private float minRunAnimSpeed = 1f;
@@ -45,7 +50,10 @@ public class SimpleRobloxController : MonoBehaviour
     private float verticalVelocity;
     private int speedHash;
     private int groundedHash;
+    private int jumpHash;
     private int runMultHash;
+    private float coyoteTimer;
+    private float jumpBufferTimer;
 
     public Vector3 WorldVelocity => horizontalVelocity + Vector3.up * verticalVelocity;
     public bool IsGrounded => controller != null && controller.isGrounded;
@@ -110,6 +118,25 @@ public class SimpleRobloxController : MonoBehaviour
         bool grounded = controller.isGrounded;
         bool sprint = ReadSprintHeld();
 
+        if (ReadJumpPressedThisFrame())
+        {
+            jumpBufferTimer = Mathf.Max(0f, jumpBufferTime);
+        }
+
+        if (jumpBufferTimer > 0f)
+        {
+            jumpBufferTimer -= Time.deltaTime;
+        }
+
+        if (grounded)
+        {
+            coyoteTimer = Mathf.Max(0f, coyoteTime);
+        }
+        else
+        {
+            coyoteTimer -= Time.deltaTime;
+        }
+
         float targetSpeed = sprint ? sprintSpeed : walkSpeed;
         Vector3 desiredVelocity = inputDirection * targetSpeed;
         float control = grounded ? 1f : airControl;
@@ -123,12 +150,25 @@ public class SimpleRobloxController : MonoBehaviour
             verticalVelocity = groundedGravity;
         }
 
-        if (grounded && ReadJumpPressedThisFrame())
+        if (jumpBufferTimer > 0f && coyoteTimer > 0f)
         {
             verticalVelocity = jumpPower;
+            jumpBufferTimer = 0f;
+            coyoteTimer = 0f;
+            TriggerJumpAnimation();
         }
 
-        verticalVelocity += gravity * Time.deltaTime;
+        float gravityScale = 1f;
+        if (verticalVelocity < 0f)
+        {
+            gravityScale = Mathf.Max(1f, fallMultiplier);
+        }
+        else if (verticalVelocity > 0f && !ReadJumpHeld())
+        {
+            gravityScale = Mathf.Max(1f, lowJumpMultiplier);
+        }
+
+        verticalVelocity += gravity * gravityScale * Time.deltaTime;
 
         Vector3 motion = horizontalVelocity;
         motion.y = verticalVelocity;
@@ -212,7 +252,16 @@ public class SimpleRobloxController : MonoBehaviour
     {
         speedHash = string.IsNullOrWhiteSpace(speedParam) ? 0 : Animator.StringToHash(speedParam);
         groundedHash = string.IsNullOrWhiteSpace(groundedParam) ? 0 : Animator.StringToHash(groundedParam);
+        jumpHash = string.IsNullOrWhiteSpace(jumpTriggerParam) ? 0 : Animator.StringToHash(jumpTriggerParam);
         runMultHash = string.IsNullOrWhiteSpace(runMultParam) ? 0 : Animator.StringToHash(runMultParam);
+    }
+
+    private void TriggerJumpAnimation()
+    {
+        if (animator != null && jumpHash != 0)
+        {
+            animator.SetTrigger(jumpHash);
+        }
     }
 
     private Vector2 ReadMoveInput()
@@ -253,6 +302,20 @@ public class SimpleRobloxController : MonoBehaviour
         return Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame;
 #else
         return Input.GetKeyDown(KeyCode.Space);
+#endif
+    }
+
+    private bool ReadJumpHeld()
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (jumpAction != null && jumpAction.action != null)
+        {
+            return jumpAction.action.IsPressed();
+        }
+
+        return Keyboard.current != null && Keyboard.current.spaceKey.isPressed;
+#else
+        return Input.GetKey(KeyCode.Space);
 #endif
     }
 

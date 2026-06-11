@@ -15,6 +15,7 @@ public class BrainrotBaseIncomeCollector : MonoBehaviour
     [Header("Collection")]
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private bool collectOnTrigger = true;
+    [SerializeField] private bool useSlotStoredAmounts = true;
 
     private double _stored;
 
@@ -39,11 +40,14 @@ public class BrainrotBaseIncomeCollector : MonoBehaviour
     private void Update()
     {
         double rate = GetTotalRate();
-        _stored += rate * Time.deltaTime;
+        if (!useSlotStoredAmounts)
+        {
+            _stored += rate * Time.deltaTime;
+        }
 
         if (storedText != null)
         {
-            storedText.text = UpgradeController.FormatCurrency(_stored);
+            storedText.text = UpgradeController.FormatCurrency(GetStoredDisplayValue());
         }
 
         if (rateText != null)
@@ -59,22 +63,21 @@ public class BrainrotBaseIncomeCollector : MonoBehaviour
             return 0d;
         }
 
-        double total = 0d;
-        foreach (BrainrotBaseSlot slot in baseManager.GetSlots())
-        {
-            if (slot == null)
-            {
-                continue;
-            }
-
-            total += slot.GetIncomePerSecond();
-        }
-
-        return total;
+        return baseManager.GetTotalIncomePerSecond();
     }
 
     public void Collect()
     {
+        if (useSlotStoredAmounts)
+        {
+            if (baseManager != null)
+            {
+                baseManager.CollectAllStored();
+            }
+
+            return;
+        }
+
         if (_stored <= 0d)
         {
             return;
@@ -86,6 +89,16 @@ public class BrainrotBaseIncomeCollector : MonoBehaviour
         }
 
         _stored = 0d;
+    }
+
+    private double GetStoredDisplayValue()
+    {
+        if (useSlotStoredAmounts && baseManager != null)
+        {
+            return baseManager.GetTotalStoredAmount();
+        }
+
+        return _stored;
     }
 
     private void OnTriggerEnter(Collider other)

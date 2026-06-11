@@ -14,7 +14,7 @@ public static class BrainrotIndexData
             return false;
         }
 
-        return IsUnlocked(definition.GetIndexId());
+        return IsUnlocked(definition.GetCollectionId()) || IsUnlocked(definition.GetIndexId());
     }
 
     public static bool IsUnlocked(string id)
@@ -34,7 +34,7 @@ public static class BrainrotIndexData
             return;
         }
 
-        Unlock(definition.GetIndexId());
+        Unlock(definition.GetCollectionId());
     }
 
     public static void Unlock(string id)

@@ -47,6 +47,22 @@ public class BrainrotBaseUpgradeController : MonoBehaviour
         RefreshUI();
     }
 
+    private void OnEnable()
+    {
+        if (baseManager != null)
+        {
+            baseManager.SlotsChanged += RefreshUI;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (baseManager != null)
+        {
+            baseManager.SlotsChanged -= RefreshUI;
+        }
+    }
+
     public bool CanUpgrade()
     {
         return baseManager != null && money != null && baseManager.UnlockedSlots < baseManager.MaxSlots && GetNextSlotCost() > 0d;
