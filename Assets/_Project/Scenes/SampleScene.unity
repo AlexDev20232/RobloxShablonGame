@@ -2087,6 +2087,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 1583690442}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &124697882
 BoxCollider:
@@ -2704,6 +2705,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &172087057
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3895,6 +3898,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &230109526
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4311,6 +4316,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &251187941
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6221,6 +6228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e6fc7eee36324c4c950ac36c1bca7f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotIndexMenu
+  catalog: {fileID: 0}
   entries:
   - {fileID: 3472654766418216503, guid: 2aff10d049fdc084887e8e46863c764a, type: 3}
   - {fileID: 627253334294000335, guid: 56e76346ee03a6147970d4c62df81b23, type: 3}
@@ -6313,6 +6321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 788860564}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &380550209
 BoxCollider:
@@ -8109,6 +8118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 1388568133}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &470496984
 BoxCollider:
@@ -9300,7 +9310,7 @@ MonoBehaviour:
   visualRoot: {fileID: 538597426}
   animator: {fileID: 538597425}
   walkSpeed: 3
-  sprintSpeed: 10
+  sprintSpeed: 5
   acceleration: 30
   airControl: 0.45
   turnSpeed: 14
@@ -9357,6 +9367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotPickupController
   promptSystem: {fileID: 538597428}
   inventory: {fileID: 1740278568}
+  gameConfig: {fileID: 0}
   holdDuration: 0.6
   holdKey: 101
 --- !u!54 &538597431
@@ -10040,6 +10051,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 799123558}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &566710957
 BoxCollider:
@@ -10868,6 +10880,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotInventoryTrigger
   inventory: {fileID: 1740278568}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &615938921
 BoxCollider:
@@ -12435,6 +12448,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &689009839
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -14594,6 +14609,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &788860565
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -15018,6 +15035,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &799123559
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20398,6 +20417,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &1122396782
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20630,6 +20651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 230109525}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &1140350699
 BoxCollider:
@@ -24331,6 +24353,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &1388568134
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -26864,6 +26888,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &1511550909
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -28507,6 +28533,8 @@ MonoBehaviour:
   inventory: {fileID: 1740278568}
   updateStoredUi: 1
   uiRefreshInterval: 0.25
+  levelScaleStep: 0.05
+  maxLevelScaleMultiplier: 1.5
 --- !u!135 &1583690443
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -30244,6 +30272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 172087056}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &1679568849
 BoxCollider:
@@ -30911,6 +30940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 689009838}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &1725205925
 BoxCollider:
@@ -31148,9 +31178,13 @@ MonoBehaviour:
   - FirstFloor
   - 2Floor
   - 3Floor
+  catalog: {fileID: 0}
+  persistPlacedBrainrots: 1
+  placedSaveInterval: 3
   persistUnlockedSlots: 1
   keepSavedSlotsAtLeastDefault: 1
   unlockedSlotsKey: BaseUnlockedSlots
+  placedSlotsKey: BasePlacedBrainrots
 --- !u!1 &1740278566
 GameObject:
   m_ObjectHideFlags: 0
@@ -33420,6 +33454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 1511550908}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &1847962078
 BoxCollider:
@@ -33625,6 +33660,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 251187940}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &1855059980
 BoxCollider:
@@ -34371,6 +34407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrainrotBaseSlotCollector
   slot: {fileID: 1122396781}
+  gameConfig: {fileID: 0}
   playerTag: Player
 --- !u!65 &1914940989
 BoxCollider:
