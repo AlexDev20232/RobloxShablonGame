@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class BrainrotBaseManager : MonoBehaviour
 {
+    [Header("Shared Config")]
+    [SerializeField] private TemplateGameConfig gameConfig;
+
     [Header("Slots")]
     [SerializeField] private BrainrotBaseSlot[] slots;
     [SerializeField] private bool autoCollectSlots = true;
@@ -36,6 +39,7 @@ public class BrainrotBaseManager : MonoBehaviour
 
     public event Action SlotsChanged;
 
+    public TemplateGameConfig GameConfig => gameConfig;
     public int UnlockedSlots => _unlockedSlots;
     public int SlotCount => slots != null ? slots.Length : 0;
     public int MaxSlots
@@ -51,6 +55,7 @@ public class BrainrotBaseManager : MonoBehaviour
     {
         CollectSlots();
         SortSlots();
+        ApplySharedConfig();
         BindSlotEvents();
         int defaultSlots = GetDefaultUnlockedSlotCount();
         int savedSlots = persistUnlockedSlots ? PlayerPrefs.GetInt(unlockedSlotsKey, defaultSlots) : defaultSlots;
@@ -318,6 +323,22 @@ public class BrainrotBaseManager : MonoBehaviour
 
             slots[i].Changed -= HandleSlotChanged;
             slots[i].Changed += HandleSlotChanged;
+        }
+    }
+
+    private void ApplySharedConfig()
+    {
+        if (slots == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] != null)
+            {
+                slots[i].SetSharedConfig(gameConfig);
+            }
         }
     }
 

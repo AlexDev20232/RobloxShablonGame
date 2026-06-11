@@ -13,7 +13,7 @@ public class BrainrotIndexMenu : MonoBehaviour
     [SerializeField] private bool autoPopulateEntries = true;
     [SerializeField] private bool includeActiveDefinitions = true;
     [SerializeField] private bool includeSpawnerPrefabs = true;
-    [SerializeField] private string editorPrefabFolder = "Assets/BrainrotPrefab";
+    [SerializeField] private string editorPrefabFolder = "Assets/_Project/Art/Brainrots/Prefabs";
 
     [Header("UI")]
     [SerializeField] private BrainrotIndexItemUI itemPrefab;

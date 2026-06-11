@@ -1,9 +1,5 @@
 using UnityEngine;
 
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
-
 public class BrainrotPickupController : MonoBehaviour
 {
     [Header("References")]
@@ -11,6 +7,7 @@ public class BrainrotPickupController : MonoBehaviour
     [SerializeField] private BrainrotInventory inventory;
 
     [Header("Hold")]
+    [SerializeField] private TemplateGameConfig gameConfig;
     [SerializeField] private float holdDuration = 0.6f;
     [SerializeField] private KeyCode holdKey = KeyCode.E;
 
@@ -27,6 +24,15 @@ public class BrainrotPickupController : MonoBehaviour
         if (inventory == null)
         {
             inventory = GetComponentInChildren<BrainrotInventory>();
+        }
+
+        if (gameConfig == null)
+        {
+            BrainrotBaseManager manager = FindFirstObjectByType<BrainrotBaseManager>();
+            if (manager != null)
+            {
+                gameConfig = manager.GameConfig;
+            }
         }
     }
 
@@ -53,7 +59,7 @@ public class BrainrotPickupController : MonoBehaviour
         }
 
         _holdTimer += Time.deltaTime;
-        float progress = Mathf.Clamp01(_holdTimer / Mathf.Max(0.01f, holdDuration));
+        float progress = Mathf.Clamp01(_holdTimer / HoldDuration);
         promptSystem.SetHoldProgress(progress);
 
         if (progress >= 1f)
@@ -75,13 +81,9 @@ public class BrainrotPickupController : MonoBehaviour
 
     private bool IsHoldPressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        if (Keyboard.current != null)
-        {
-            return Keyboard.current.eKey.isPressed;
-        }
-#endif
-
-        return Input.GetKey(holdKey);
+        return TemplateInput.IsKeyPressed(HoldKey);
     }
+
+    private KeyCode HoldKey => gameConfig != null ? gameConfig.InteractKey : holdKey;
+    private float HoldDuration => gameConfig != null ? gameConfig.HoldDuration : Mathf.Max(0.01f, holdDuration);
 }

@@ -13,6 +13,7 @@ public class BrainrotBaseIncomeCollector : MonoBehaviour
     [SerializeField] private TMP_Text rateText;
 
     [Header("Collection")]
+    [SerializeField] private TemplateGameConfig gameConfig;
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private bool collectOnTrigger = true;
     [SerializeField] private bool useSlotStoredAmounts = true;
@@ -34,6 +35,11 @@ public class BrainrotBaseIncomeCollector : MonoBehaviour
         if (money == null)
         {
             money = FindFirstObjectByType<UpgradeController>();
+        }
+
+        if (gameConfig == null && baseManager != null)
+        {
+            gameConfig = baseManager.GameConfig;
         }
     }
 
@@ -108,9 +114,11 @@ public class BrainrotBaseIncomeCollector : MonoBehaviour
             return;
         }
 
-        if (other.CompareTag(playerTag))
+        if (other.CompareTag(PlayerTag))
         {
             Collect();
         }
     }
+
+    private string PlayerTag => gameConfig != null ? gameConfig.PlayerTag : playerTag;
 }

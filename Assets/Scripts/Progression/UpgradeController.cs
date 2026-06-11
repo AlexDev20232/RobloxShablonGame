@@ -7,7 +7,6 @@ public class UpgradeController : MonoBehaviour
     [SerializeField] private UpgradeItem[] upgradeItems;
 
     [Header("Speed")]
-    [SerializeField] private SimpleRunIdleController playerController;
     [SerializeField] private SimpleRobloxController robloxController;
     [SerializeField] private bool autoFindPlayerController = true;
     [SerializeField] private float baseMoveSpeed = 5f;
@@ -158,10 +157,6 @@ public class UpgradeController : MonoBehaviour
             robloxController = FindFirstObjectByType<SimpleRobloxController>();
         }
 
-        if (playerController == null)
-        {
-            playerController = FindFirstObjectByType<SimpleRunIdleController>();
-        }
     }
 
     private void Load()
@@ -200,10 +195,6 @@ public class UpgradeController : MonoBehaviour
             robloxController.SetMoveSpeeds(walk, sprint);
         }
 
-        if (playerController != null)
-        {
-            playerController.moveSpeed = walk;
-        }
     }
 
     private long GetCostForDelta(int delta)

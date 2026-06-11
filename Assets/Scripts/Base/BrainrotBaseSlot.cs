@@ -1,10 +1,6 @@
 using System;
 using UnityEngine;
 
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
-
 public class BrainrotBaseSlot : MonoBehaviour
 {
     [Header("Slot")]
@@ -46,6 +42,7 @@ public class BrainrotBaseSlot : MonoBehaviour
     private double _stored;
     private Vector3 _baseOccupantScale = Vector3.one;
 
+    private TemplateGameConfig _sharedConfig;
     private UpgradeController _money;
     private RebirthSystem _rebirth;
 
@@ -95,7 +92,7 @@ public class BrainrotBaseSlot : MonoBehaviour
             _stored += GetIncomePerSecond() * Time.deltaTime;
             if (Time.time >= _nextUiRefreshTime)
             {
-                _nextUiRefreshTime = Time.time + Mathf.Max(0.05f, uiRefreshInterval);
+                _nextUiRefreshTime = Time.time + EffectiveUiRefreshInterval;
                 UpdateStoredUI();
             }
 
@@ -121,7 +118,7 @@ public class BrainrotBaseSlot : MonoBehaviour
         }
 
         _holdTimer += Time.deltaTime;
-        float progress = Mathf.Clamp01(_holdTimer / Mathf.Max(0.01f, holdDuration));
+        float progress = Mathf.Clamp01(_holdTimer / EffectiveHoldDuration);
         _promptInstance.SetHoldProgress(progress);
 
         if (progress >= 1f)
@@ -146,6 +143,11 @@ public class BrainrotBaseSlot : MonoBehaviour
         }
 
         RefreshUI();
+    }
+
+    public void SetSharedConfig(TemplateGameConfig config)
+    {
+        _sharedConfig = config;
     }
 
     public double GetIncomePerSecond()
@@ -317,8 +319,8 @@ public class BrainrotBaseSlot : MonoBehaviour
             return;
         }
 
-        float step = Mathf.Max(0f, levelScaleStep);
-        float maxMultiplier = Mathf.Max(1f, maxLevelScaleMultiplier);
+        float step = EffectiveLevelScaleStep;
+        float maxMultiplier = EffectiveMaxLevelScaleMultiplier;
         float multiplier = Mathf.Min(maxMultiplier, 1f + step * Mathf.Max(0, _level - 1));
         _occupant.transform.localScale = _baseOccupantScale * multiplier;
     }
@@ -389,7 +391,7 @@ public class BrainrotBaseSlot : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag(playerTag))
+        if (!other.CompareTag(EffectivePlayerTag))
         {
             return;
         }
@@ -399,7 +401,7 @@ public class BrainrotBaseSlot : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (!other.CompareTag(playerTag))
+        if (!other.CompareTag(EffectivePlayerTag))
         {
             return;
         }
@@ -448,13 +450,27 @@ public class BrainrotBaseSlot : MonoBehaviour
 
     private bool IsHoldPressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        if (Keyboard.current != null)
-        {
-            return Keyboard.current.eKey.isPressed;
-        }
-#endif
-
-        return Input.GetKey(holdKey);
+        return TemplateInput.IsKeyPressed(EffectiveHoldKey);
     }
+
+    private TemplateGameConfig ResolveConfig()
+    {
+        if (_sharedConfig == null)
+        {
+            BrainrotBaseManager manager = GetComponentInParent<BrainrotBaseManager>();
+            if (manager != null)
+            {
+                _sharedConfig = manager.GameConfig;
+            }
+        }
+
+        return _sharedConfig;
+    }
+
+    private string EffectivePlayerTag => ResolveConfig() != null ? ResolveConfig().PlayerTag : playerTag;
+    private KeyCode EffectiveHoldKey => ResolveConfig() != null ? ResolveConfig().InteractKey : holdKey;
+    private float EffectiveHoldDuration => ResolveConfig() != null ? ResolveConfig().HoldDuration : Mathf.Max(0.01f, holdDuration);
+    private float EffectiveUiRefreshInterval => ResolveConfig() != null ? ResolveConfig().SlotUiRefreshInterval : Mathf.Max(0.05f, uiRefreshInterval);
+    private float EffectiveLevelScaleStep => ResolveConfig() != null ? ResolveConfig().LevelScaleStep : Mathf.Max(0f, levelScaleStep);
+    private float EffectiveMaxLevelScaleMultiplier => ResolveConfig() != null ? ResolveConfig().MaxLevelScaleMultiplier : Mathf.Max(1f, maxLevelScaleMultiplier);
 }
