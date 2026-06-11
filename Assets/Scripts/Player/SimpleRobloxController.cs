@@ -28,13 +28,13 @@ public class SimpleRobloxController : MonoBehaviour
     [SerializeField] private float turnSpeed = 14f;
 
     [Header("Roblox-like Jump")]
-    [SerializeField] private float jumpPower = 8.5f;
-    [SerializeField] private float gravity = -28f;
-    [SerializeField] private float groundedGravity = -2f;
+    [SerializeField] private float jumpPower = 9.8f;
+    [SerializeField] private float gravity = -22f;
+    [SerializeField] private float groundedGravity = -1.25f;
     [SerializeField] private float coyoteTime = 0.12f;
     [SerializeField] private float jumpBufferTime = 0.12f;
-    [SerializeField] private float fallMultiplier = 1.25f;
-    [SerializeField] private float lowJumpMultiplier = 1.55f;
+    [SerializeField] private float fallMultiplier = 1.1f;
+    [SerializeField] private float lowJumpMultiplier = 1.25f;
 
     [Header("Animation")]
     [SerializeField] private string speedParam = "Speed";
@@ -64,6 +64,22 @@ public class SimpleRobloxController : MonoBehaviour
     {
         walkSpeed = Mathf.Max(0.01f, newWalkSpeed);
         sprintSpeed = Mathf.Max(walkSpeed, newSprintSpeed);
+    }
+
+    private void OnValidate()
+    {
+        walkSpeed = Mathf.Max(0.01f, walkSpeed);
+        sprintSpeed = Mathf.Max(walkSpeed, sprintSpeed);
+        acceleration = Mathf.Max(0f, acceleration);
+        airControl = Mathf.Clamp01(airControl);
+        turnSpeed = Mathf.Max(0f, turnSpeed);
+        jumpPower = Mathf.Max(0.01f, jumpPower);
+        gravity = -Mathf.Max(0.01f, Mathf.Abs(gravity));
+        groundedGravity = -Mathf.Max(0.01f, Mathf.Abs(groundedGravity));
+        coyoteTime = Mathf.Max(0f, coyoteTime);
+        jumpBufferTime = Mathf.Max(0f, jumpBufferTime);
+        fallMultiplier = Mathf.Max(1f, fallMultiplier);
+        lowJumpMultiplier = Mathf.Max(1f, lowJumpMultiplier);
     }
 
     private void Awake()

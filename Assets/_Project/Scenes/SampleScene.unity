@@ -9304,11 +9304,16 @@ MonoBehaviour:
   acceleration: 30
   airControl: 0.45
   turnSpeed: 14
-  jumpPower: 8.5
-  gravity: -30
-  groundedGravity: -2
+  jumpPower: 9.8
+  gravity: -22
+  groundedGravity: -1.25
+  coyoteTime: 0.12
+  jumpBufferTime: 0.12
+  fallMultiplier: 1.1
+  lowJumpMultiplier: 1.25
   speedParam: Speed
   groundedParam: IsGrounded
+  jumpTriggerParam: Jump
   runMultParam: RunSpeedMultiplier
   speedDampTime: 0.08
   minRunAnimSpeed: 1
