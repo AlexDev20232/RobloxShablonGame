@@ -1,0 +1,410 @@
+PROJECT HANDOFF ДЛЯ CODEX
+Unity project: BrainrotGameShablon
+Path on current PC: C:\Users\playzone\Downloads\RobloxShblonGame\BrainrotGameShablon
+GitHub: https://github.com/AlexDev20232/RobloxShablonGame.git
+
+1. Главная цель проекта
+
+Это Unity-шаблон для быстрых прототипов Roblox-style игр под Яндекс Игры.
+Идея проекта: сделать удобную базу, на которую можно быстро наращивать разные популярные идеи из Roblox-жанра:
+- brainrot / мемные существа;
+- база игрока;
+- слоты на базе;
+- пассивный заработок;
+- прокачка;
+- перерождения;
+- коллекционный индекс;
+- магазины и апгрейды.
+
+Проект не должен быть одной жестко зашитой игрой. Он должен быть удобным шаблоном: чтобы потом можно было заменить тему, добавить новые brainrot-персонажи, новые апгрейды, новые магазины, новые механики и быстро собрать новый проект такого типа.
+
+Важно: лишнюю wave/run-логику нужно убирать. Нужна чистая основа: ходьба, анимации, brainrot-система, база, слоты, доход, апгрейды, rebirth, index, shop.
+
+2. Референсы и жанр
+
+Проект вдохновлен текущими Roblox-играми, где игрокам заходят:
+- базы;
+- brainrot-коллекции;
+- стаки и слоты;
+- пассивный доход в секунду;
+- прокачка дохода/скорости/силы;
+- покупка новых этажей/слотов;
+- rebirth с множителем заработка;
+- index с открытыми и закрытыми персонажами;
+- простой яркий визуал в стиле Roblox/lego.
+
+Примеры референсов, которые обсуждались:
+- Wave Brainrot;
+- Kick a Lucky Block;
+- Brainrot Sniper;
+- похожие brainrot/base/progression Roblox-проекты.
+
+3. Основной игровой цикл, который нужен
+
+1. Игрок бегает по локации с управлением, похожим на Roblox.
+2. Игрок получает или подбирает brainrot.
+3. Игрок ставит brainrot на свободный слот базы.
+4. Brainrot правильно разворачивается лицом к базе/передней стороне слота.
+5. Brainrot копит деньги сам по себе.
+6. На income panel около слота показывается накопленная сумма.
+7. Игрок физически заходит в триггер income panel.
+8. Деньги с конкретного слота добавляются в общий баланс игрока.
+9. Накопленная сумма на этом слоте сбрасывается.
+10. Игрок улучшает brainrot за деньги.
+11. При каждом уровне доход brainrot увеличивается, а размер/визуал может немного расти.
+12. Игрок покупает новые слоты базы.
+13. Когда текущий этаж заполнен, открывается следующий этаж и первый слот на нем.
+14. Игрок делает rebirth, получает +0.5x к заработку базы за каждое перерождение.
+15. Открытые brainrot автоматически попадают в index.
+16. В shop можно покупать валюту, предметы или улучшения.
+
+4. Правила пассивного заработка
+
+Стартовый доход brainrot задается вручную в данных brainrot.
+Например: первый уровень дает $5/s.
+
+Income panel не считает сложную формулу каждый раз. Она просто хранит накопленную сумму слота и каждую секунду добавляет:
+
+доход brainrot в секунду * уровень/множитель brainrot * множитель базы от rebirth
+
+Когда игрок заходит в trigger income panel:
+- накопленная сумма переводится в общий баланс;
+- income panel обнуляется;
+- слот продолжает копить деньги снова.
+
+5. Brainrot-контент
+
+План: минимум 50 brainrot для нормального шаблона.
+
+Нужно, чтобы добавление нового brainrot было простым:
+1. Добавить модель/префаб в папку brainrot.
+2. Заполнить данные: id, имя, редкость, стартовый доход, иконку, prefab.
+3. Brainrot автоматически появляется в каталоге/index.
+4. Если игрок получил brainrot, он считается открытым в index.
+
+Brainrot должны поддерживать:
+- имя;
+- редкость;
+- тип/категорию;
+- базовый доход;
+- уровень;
+- множитель/скин;
+- иконку для UI;
+- prefab для спавна;
+- idle-анимацию или простое покачивание.
+
+6. База и слоты
+
+Нужно сохранить логику:
+- по дефолту доступны только первые слоты;
+- верхние слоты и этажи закрыты;
+- игрок покупает слоты за деньги;
+- если на текущем этаже все слоты открыты, покупка открывает следующий этаж и первый слот;
+- дальше открываются второй, третий, четвертый слот этого этажа и так далее;
+- цены должны быть конфигурируемыми, желательно через ScriptableObject.
+
+Таблички возле базы должны показывать:
+- текущий множитель базы, например x1, x1.5, x2;
+- цену следующего слота;
+- возможно количество открытых слотов и этажей.
+
+7. Rebirth
+
+Rebirth нужен как базовая механика прогрессии.
+
+План:
+- rebirth требует накопить определенную валюту/стат;
+- после rebirth часть прогресса сбрасывается;
+- каждый rebirth дает +0.5x к cash/income базы;
+- UI показывает текущий rebirth и следующий множитель.
+
+8. Управление игроком
+
+Нужно максимально простое и похожее на Roblox:
+- WASD/стик;
+- плавный поворот к направлению движения;
+- прыжок как в Roblox;
+- не сложный код;
+- настройки должны быть понятными в inspector.
+
+Сейчас используется SimpleRobloxController.
+В нем нужно настраивать:
+- walkSpeed;
+- sprintSpeed;
+- acceleration;
+- rotationSharpness;
+- jumpHeight;
+- gravity;
+- groundedGravity;
+- coyoteTime;
+- jumpBufferTime;
+- fallGravityMultiplier.
+
+Прыжок уже стал выше и мягче, но параметры можно дальше подкручивать.
+
+9. Визуал локации
+
+Нужен яркий, приятный Roblox/lego-вид, но не слишком кислотный.
+Важно:
+- lego-квадратики на земле и стенах должны быть именно квадратами, а не линиями;
+- материалы не должны растягиваться полосами;
+- если меняются материалы/шейдеры, нужно очень аккуратно проверять результат в сцене;
+- пользователь уже просил вернуть текстуры ближе к исходным настройкам, поэтому дальше не ломать материалы без явной проверки.
+
+10. Что уже сделано в проекте
+
+GitHub:
+- проект подключен к репозиторию;
+- origin сейчас указывает на https://github.com/AlexDev20232/RobloxShablonGame.git;
+- основная ветка main;
+- перед крупными изменениями делались backup-коммиты;
+- последняя чистая точка до WIP трейлов: a0402ca backup: before hand trails.
+
+Структура проекта:
+- game-specific assets лежат в Assets/_Project;
+- runtime scripts лежат в Assets/Scripts;
+- есть файл Assets/_Project/PROJECT_STRUCTURE.md с описанием папок.
+
+Основные папки:
+- Assets/_Project/Art/Brainrots/Prefabs - brainrot prefab;
+- Assets/_Project/Art/Brainrots/Models - модели;
+- Assets/_Project/Art/Brainrots/Icons - иконки;
+- Assets/_Project/Art/Environment - окружение, материалы, текстуры;
+- Assets/_Project/Art/Characters - персонаж, анимации, effects;
+- Assets/_Project/Art/UI - UI assets;
+- Assets/_Project/Data - ScriptableObject configs/catalogs;
+- Assets/_Project/Prefabs/UI - UI prefabs;
+- Assets/_Project/Scenes - сцены;
+- Assets/Scripts/Base - база, слоты, доход, апгрейды;
+- Assets/Scripts/Brainrot - brainrot-система, index, pickup, catalog;
+- Assets/Scripts/Player - движение, камера, player effects;
+- Assets/Scripts/Progression - rebirth, upgrades, stats UI;
+- Assets/Scripts/Core - общие настройки и input;
+- Assets/Scripts/UI - UI helpers;
+- Assets/Scripts/Utility - мелкие утилиты.
+
+11. Уже созданные важные системы и скрипты
+
+Core:
+- TemplateGameConfig - общий ScriptableObject с настройками проекта.
+- TemplateInput - централизованный ввод, interact key, player tag и общие параметры.
+
+Player:
+- SimpleRobloxController - основное движение игрока, прыжок, гравитация, анимационные параметры.
+- SimpleOrbitCamera - простая камера.
+- SimpleRunIdleController перенесен в Legacy, чтобы не смешивать старую логику с основной.
+
+Player Effects:
+- PlayerHandTrailController - WIP: создает trail renderer на левой и правой руке игрока.
+- HandTrail.shader - WIP shader для trail.
+- HandTrail_White.mat - материал trail.
+
+Brainrot:
+- BrainrotDefinition - данные конкретного brainrot.
+- BrainrotCatalog - каталог brainrot для index/spawn.
+- BrainrotRarity, BrainrotType - типы/редкости.
+- BrainrotSkinPalette, BrainrotSkinApplier - palette/skin система.
+- BrainrotInventory - инвентарь brainrot.
+- BrainrotInventoryTrigger - триггер для работы с инвентарем/постановкой.
+- BrainrotPickupController - логика подбора brainrot.
+- BrainrotIdleAnimator - простая idle-анимация.
+- BrainrotIndexData, BrainrotIndexMenu, BrainrotIndexItemUI - index-система.
+- BrainrotSpawner - спавн brainrot.
+- BrainrotPromptSystem, BrainrotUI - UI/prompt.
+
+Base:
+- BrainrotBaseManager - общий менеджер базы, слотов, прогрессии.
+- BrainrotBaseSlot - один слот базы.
+- BrainrotBaseIncomeCollector - сбор дохода через trigger/panel.
+- BrainrotBaseSlotCollector - сбор слотовых данных/поиск слотов.
+- BrainrotBaseSlotUI - отображение UI слота.
+- BrainrotBaseUpgradeController - upgrade brainrot/base-slot logic.
+- BrainrotOfflineIncomeController - базовая offline income логика.
+- BaseProgressionConfig - ScriptableObject для цен/открытия слотов и этажей.
+- BaseStatsSign - таблички параметров базы.
+
+Progression:
+- RebirthSystem - базовая логика rebirth.
+- UpgradeController, UpgradeItem - апгрейды.
+- PlayerStatsDisplay - UI денег/скорости/статов.
+
+UI:
+- TemplateUiBinder - связывает UI с системами.
+- PurchasePrompt - покупка/подтверждение.
+- UIPopupScaleTween - простая UI-анимация.
+- UIGradientImage - UI effect.
+
+12. Данные ScriptableObject, которые уже есть
+
+Assets/_Project/Data:
+- TemplateGameConfig_Default.asset
+- BrainrotCatalog_Default.asset
+- BrainrotSkinPalette_Default.asset
+- BaseProgression_Default.asset
+
+Эти файлы нужно использовать как основу, а не зашивать значения в код.
+
+13. Анимации игрока
+
+В Assets/_Project/Art/Characters/Animations есть:
+- CharacterController.controller
+- Idle.anim
+- Run.anim
+- jump_1.anim
+
+Jump animation уже была добавлена в animator.
+В controller есть:
+- Idle;
+- Run;
+- Jump;
+- Jump trigger;
+- IsGrounded bool.
+
+Была проблема: после прыжка персонаж замирал на земле.
+Исправление уже сделано: переходы из Jump в Run/Idle не должны ждать exit time, чтобы персонаж сразу продолжал бег после касания земли.
+
+14. Текущий WIP: трейлы за руками игрока
+
+Пользователь попросил сделать красивые бело-зеленые трейлы за руками, начало trail должно быть на конце каждой руки.
+
+Уже добавлено:
+- Assets/Scripts/Player/Effects/PlayerHandTrailController.cs
+- Assets/_Project/Art/Characters/Effects/HandTrail.shader
+- Assets/_Project/Art/Characters/Effects/HandTrail_White.mat
+- компонент PlayerHandTrailController добавлен на игрока в SampleScene.
+
+Что еще проверить в Unity:
+- скомпилировался ли скрипт;
+- видны ли trail в Play Mode;
+- trail начинается ли именно у кистей;
+- не слишком ли толстый/тонкий;
+- не слишком ли длинный/короткий;
+- правильно ли выключается, когда игрок стоит.
+
+В inspector можно крутить:
+- leftHandLocalOffset;
+- rightHandLocalOffset;
+- coreTime;
+- coreWidth;
+- glowTime;
+- glowWidth;
+- coreStartColor/coreEndColor;
+- glowStartColor/glowEndColor;
+- minSpeedToEmit;
+- minVertexDistance.
+
+На момент передачи проекта пользователь/Unity уже менял некоторые значения trail в сцене. Не перетирать их без проверки.
+
+15. Известные технические моменты
+
+Unity MCP:
+- в Codex может быть несколько Unity instances;
+- правильный instance проекта был BrainrotGameShablon@48524acc6378fbc8;
+- если MCP не видит сцену, сначала выбрать active instance.
+
+Консоль Unity:
+- были ошибки Unity AI generator NoSubscription;
+- они относятся к Unity AI generators, а не к gameplay scripts.
+
+dotnet build:
+- проверка через dotnet build может падать из-за временных Unity AI/MCP dll в Temp;
+- это не всегда означает ошибку gameplay-кода;
+- главный источник истины: Unity Console после compilation.
+
+16. Ближайший план работ
+
+Приоритет 1:
+1. Проверить WIP hand trails в Play Mode.
+2. Если trail не там, подстроить offset на кистях.
+3. Если trail слишком длинный/широкий, подстроить time/width.
+4. Проверить, что jump/run animation сразу переключаются без зависания.
+
+Приоритет 2:
+1. Довести Stage 1 core:
+   - pickup brainrot;
+   - place to slot;
+   - correct rotation on slot;
+   - passive income;
+   - income panel trigger collection;
+   - slot upgrade;
+   - base slot unlock progression;
+   - index auto-registration;
+   - basic rebirth.
+2. Проверить все в одной сцене.
+
+Приоритет 3:
+1. Добавить больше brainrot.
+2. Довести index UI.
+3. Довести shop.
+4. Довести base signs.
+5. Оптимизировать повторяющиеся компоненты и лишний Update.
+
+17. Как добавлять нового brainrot в будущем
+
+Желаемый процесс:
+1. Поместить модель в Assets/_Project/Art/Brainrots/Models.
+2. Сделать prefab в Assets/_Project/Art/Brainrots/Prefabs.
+3. Добавить/настроить BrainrotDefinition на prefab.
+4. Указать id, displayName, rarity, type, baseIncomePerSecond, icon.
+5. Добавить prefab/definition в BrainrotCatalog_Default.
+6. Проверить, что он появляется в index.
+7. Проверить, что он ставится на слот и дает доход.
+
+18. Git workflow для следующего Codex-чата
+
+Перед изменениями желательно сделать backup commit, если рабочее дерево чистое.
+
+После каждой завершенной правки:
+1. Run git status.
+2. Stage only:
+   - Assets;
+   - Packages;
+   - ProjectSettings;
+   - .gitignore;
+   - .gitattributes.
+3. Always include changed .meta files.
+4. Never commit:
+   - Library;
+   - Temp;
+   - Obj;
+   - Logs;
+   - Build;
+   - Builds;
+   - secrets;
+   - API keys;
+   - local credentials.
+5. Commit with short message.
+6. Push to origin main.
+7. If push fails or remote history conflicts, stop and report. Do not force push.
+
+Useful commands:
+
+git status
+git add Assets Packages ProjectSettings .gitignore .gitattributes
+git diff --cached --check
+git commit -m "backup: update project"
+git push origin main
+
+19. Важная просьба по стилю кода
+
+Код должен быть простым, чистым и поддерживаемым.
+Не нужно усложнять архитектуру ради архитектуры.
+Лучший подход:
+- данные через ScriptableObject;
+- одна понятная система вместо десятков дублей;
+- настройки в inspector;
+- минимум жестко зашитых значений;
+- не вешать одинаковые настройки вручную на каждый объект, если можно централизовать;
+- не ломать существующие сцены и материалы без проверки.
+
+20. Что нужно помнить про пользователя
+
+Пользователь хочет не просто одну игру, а удобную базу для серии похожих проектов.
+Главное для него:
+- быстро добавлять brainrot;
+- быстро менять тему/механику;
+- иметь рабочую базу слотов и дохода;
+- не держать проект в хаосе;
+- делать backup в GitHub после завершенных правок;
+- не ломать материалы/визуал без проверки;
+- объяснять, какие файлы созданы, за что отвечают и что нужно настроить вручную.
